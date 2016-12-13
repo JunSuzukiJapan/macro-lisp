@@ -70,7 +70,7 @@ macro_rules! lisp {
     // defconstant
     (defconstant ($var:ident $typ:ty) ( $($e: tt)+ ) ) => (let $var:$typ = lisp!( $($e)+););
     (defconstant ($var:ident $typ:ty) $e:expr) => (let $var:$typ = $e;);
-    (defconstant $var:ident ( $($e: tt)+ ) ) => (let $var = lisp!( $($e)+););
+    (defconstant $var:ident ( $($e: tt)+ ) ) => (let $var = lisp!( $($e)+ ););
     (defconstant $var:ident $e:expr) => (let $var = $e;);
     // defvar
     (defvar ($var:ident $typ:ty) ( $($e: tt)+ )) => (let mut $var:$typ = lisp!( $($e)+););
@@ -95,6 +95,7 @@ macro_rules! lisp {
     // compare
     (== ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) == lisp!( $($e2)+));
     (== $e1:tt ( $($e: tt)+ ) ) => ($e1 == lisp!( $($e)+) );
+    (== ( $($e1: tt)+ ) $e2:tt) => (lisp!( $($e1)+ ) == $e2);
     (== $e1:tt $e2:tt) => ($e1 == $e2);
     (!= ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) != lisp!( $($e2)+));
     (!= $e1:tt ( $($e: tt)+ ) ) => ($e1 != lisp!( $($e)+) );
@@ -127,7 +128,8 @@ macro_rules! lisp {
     (% $x:tt $y:tt) => ($x % $y);
     // funcall
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
-    ($sym:ident $( $e:tt )* ) => ( $sym( lisp!( $($e),* ) ); );
+    //($sym:ident $( $e:tt )* ) => ( $sym ( lisp!( $($e),* ) ) );
+    ($sym:ident $( $e:tt )* ) => ( $sym ( $($e),* ) );
     //($sym:path ( $( $e:tt )* )) => ( $sym( $($e),* ); );
     // execute rust expr
     (rust $( $e:tt )* ) => ( $($e);* );
