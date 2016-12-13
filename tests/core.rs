@@ -9,6 +9,24 @@ extern crate macro_lisp;
 mod tests {
     use macro_lisp::*;
 
+    #[test]
+    fn test_progn(){
+        lisp!(progn
+            (defconstant x 3)
+            (defconstant y 4)
+            (defvar z (* x y))
+            (assert_eq 12 z)
+        );
+    }
+
+    #[test]
+    fn test_if(){
+        lisp!(if (eq 1 1) (println "equal"));
+        lisp!(if (eq 2 2) (println "equal") (println "not equal"));
+        let x = lisp!(if true (+ 1 1) (+ 2 2));
+        assert_eq!(2, x);
+    }
+
     lisp!(defun add ((x i32) (y i32)) i32
         (+ x y)
     );

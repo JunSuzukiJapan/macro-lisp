@@ -6,7 +6,14 @@ pub struct Cons<T, U> {
 
 #[macro_export]
 macro_rules! lisp {
-    // extern crate
+    // progn
+    (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
+    // if
+    (if ( $($cond:tt)* ) ( $($e1:tt)* ) ( $($e2:tt)* )) => (if lisp!($($cond)*) { lisp!($($e1)*) }else{ lisp!($($e2)*) });
+    (if ( $($cond:tt)* ) ( $($e:tt)* )) => (if lisp!($($cond)*) { lisp!($($e)*) });
+    (if $cond:tt ( $($e1:tt)* ) ( $($e2:tt)* )) => (if $cond { lisp!($($e1)*) }else{ lisp!($($e2)*) });
+    (if $cond:tt ( $($e:tt)* )) => (if $cond { lisp!($($e)*) });
+     // extern crate
     (extern-crate $sym:ident) => (extern crate $sym;);
     // use
     (use $sym:tt) => (use $sym;);
@@ -39,12 +46,6 @@ macro_rules! lisp {
             $( lisp!( $($e)* ) );*
         }
     );
-    // +,-,*,/,%
-    (+ $x:tt $y:tt) => ($x + $y); 
-    (- $x:tt $y:tt) => ($x - $y); 
-    (* $x:tt $y:tt) => ($x * $y); 
-    (/ $x:tt $y:tt) => ($x / $y); 
-    (% $x:tt $y:tt) => ($x % $y); 
     // defconstant
     (defconstant ($var:ident $typ:ty) ( $($e: tt)+ ) ) => (let $var:$typ = lisp!( $($e)+););
     (defconstant ($var:ident $typ:ty) $e:expr) => (let $var:$typ = $e;);
@@ -77,6 +78,14 @@ macro_rules! lisp {
     (assert_eq $e1:tt $e2:tt) => ( assert_eq!($e1, $e2); );
     (debug_assert $e1:tt $e2:tt) => ( debug_assert!($e1, $e2); );
     (debug_assert_eq $e1:tt $e2:tt) => ( debug_assert_eq!($e1, $e2); );
+    // +,-,*,/,%
+    (+ $x:tt $y:tt) => ($x + $y); 
+    (- $x:tt $y:tt) => ($x - $y); 
+    (* $x:tt $y:tt) => ($x * $y); 
+    (/ $x:tt $y:tt) => ($x / $y); 
+    (% $x:tt $y:tt) => ($x % $y); 
     // funcall
     ($sym:ident $( $e:tt )* ) => ( $sym( $($e),* ); );
+    // other
+    ($e:tt) => ($e);
 }
