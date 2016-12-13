@@ -14,34 +14,47 @@ macro_rules! lisp {
     (if $cond:tt ( $($e1:tt)* ) ( $($e2:tt)* )) => (if $cond { lisp!($($e1)*) }else{ lisp!($($e2)*) });
     (if $cond:tt ( $($e:tt)* )) => (if $cond { lisp!($($e)*) });
      // extern crate
-    (extern-crate $sym:ident) => (extern crate $sym;);
+    ( $(#[$m:meta])* extern-crate $sym:ident) => ($(#[$m]);* extern crate $sym;);
     // use
     (use $sym:tt) => (use $sym;);
+    // mod
+    ( $(#[$m:meta])* module $sym:ident
+        $( ( $($e:tt)* ))*
+     ) => (
+         $(#[$m]);*
+         mod $sym {
+             $( lisp!( $($e)* ); )*
+         }
+    );
     // defun
-    (defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
+    ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
         $( ( $($e:tt)* ))*
     ) => (
+        $(#[$m]);*
         fn $sym( $($name : $typ),* ) -> $return_type {
             $( lisp!( $($e)* ) );*
         }
     );
-    (defun $sym:ident ( $( ( $name:ident $typ:ty ) )* )
+    ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
     ) => (
+        $(#[$m]);*
         fn $sym( $($name : $typ),* ) {
             $( lisp!( $($e)* ) );*
         }
     );
-    (pub defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
+    ( $(#[$m:meta])* pub defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
         $( ( $($e:tt)* ))*
     ) => (
+        $(#[$m]);*
         pub fn $sym( $($name : $typ),* ) -> $return_type {
             $( lisp!( $($e)* ) );*
         }
     );
-    (pub defun $sym:ident ( $( ( $name:ident $typ:ty ) )* )
+    ( $(#[$m:meta])* pub defun $sym:ident ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
     ) => (
+        $(#[$m]);*
         pub fn $sym( $($name : $typ),* ) {
             $( lisp!( $($e)* ) );*
         }
@@ -86,6 +99,8 @@ macro_rules! lisp {
     (% $x:tt $y:tt) => ($x % $y); 
     // funcall
     ($sym:ident $( $e:tt )* ) => ( $sym( $($e),* ); );
+    // execute rust expr
+    (rust $( $e:tt )* ) => ( $($e);* );
     // other
     ($e:tt) => ($e);
 }

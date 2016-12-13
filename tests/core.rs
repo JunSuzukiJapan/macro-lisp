@@ -27,6 +27,10 @@ mod tests {
         assert_eq!(2, x);
     }
 
+    lisp!(defun hello () ()
+        (println "Hello")
+    );
+
     lisp!(defun add ((x i32) (y i32)) i32
         (+ x y)
     );
