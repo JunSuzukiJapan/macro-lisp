@@ -25,6 +25,20 @@ macro_rules! lisp {
             $( lisp!( $($e)* ) );*
         }
     );
+    (pub defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
+        $( ( $($e:tt)* ))*
+    ) => (
+        pub fn $sym( $($name : $typ),* ) -> $return_type {
+            $( lisp!( $($e)* ) );*
+        }
+    );
+    (pub defun $sym:ident ( $( ( $name:ident $typ:ty ) )* )
+        $( ( $($e:tt)* ))*
+    ) => (
+        pub fn $sym( $($name : $typ),* ) {
+            $( lisp!( $($e)* ) );*
+        }
+    );
     // +,-,*,/,%
     (+ $x:tt $y:tt) => ($x + $y); 
     (- $x:tt $y:tt) => ($x - $y); 
