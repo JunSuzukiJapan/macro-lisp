@@ -25,6 +25,8 @@ mod tests {
         lisp!(if (eq 2 2) (println "equal") (println "not equal"));
         let x = lisp!(if true (+ 1 1) (+ 2 2));
         assert_eq!(2, x);
+
+        lisp!(if (<= 1 2) (println "True") (println "False"));
     }
 
     lisp!(defun hello () ()
@@ -66,14 +68,14 @@ mod tests {
     fn test_defvar(){
         lisp!(defvar x 0);
         assert_eq!(0, x);
-        lisp!(setq x 1);
+        lisp!(setf x 1);
         assert_eq!(1, x);
 
         lisp!(defvar cell (cons 5 "test"));
         assert_eq!(5, lisp!(car cell));
         assert_eq!("test", lisp!(cdr cell));
 
-        lisp!(setq cell (cons 6 "dummy"));
+        lisp!(setf cell (cons 6 "dummy"));
         assert_eq!(6, lisp!(car cell));
         assert_eq!("dummy", lisp!(cdr cell));
 
@@ -89,13 +91,13 @@ mod tests {
     }
 
     #[test]
-    fn test_setq(){
+    fn test_setf(){
         let mut cell: Cons<&str, &str> = lisp!(cons "hello" "world");
 
-        lisp!(setq (car cell) (cdr cell));
+        lisp!(setf (car cell) (cdr cell));
         assert_eq!("world", lisp!(car cell));
 
-        lisp!(setq (cdr cell) "hello");
+        lisp!(setf (cdr cell) "hello");
         assert_eq!("hello", lisp!(cdr cell));
     }
 }

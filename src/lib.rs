@@ -26,6 +26,14 @@ macro_rules! lisp {
              $( lisp!( $($e)* ); )*
          }
     );
+    ( $(#[$m:meta])* pub module $sym:ident
+        $( ( $($e:tt)* ))*
+     ) => (
+         $(#[$m]);*
+         pub mod $sym {
+             $( lisp!( $($e)* ); )*
+         }
+    );
     // defun
     ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
         $( ( $($e:tt)* ))*
@@ -73,17 +81,36 @@ macro_rules! lisp {
     (cons $car:tt $cdr:tt) => (Cons{car: $car, cdr: $cdr});
     (car $cell:tt) => ($cell.car);
     (cdr $cell:tt) => ($cell.cdr);
-    // setq
-    (setq (car $e1:tt) ( $($e: tt)+ ) ) => ($e1.car = lisp!( $($e)+));
-    (setq (cdr $e1:tt) ( $($e: tt)+ ) ) => ($e1.cdr = lisp!( $($e)+));
-    (setq (car $e1:tt) $e2:expr) => ($e1.car = $e2);
-    (setq (cdr $e1:tt) $e2:expr) => ($e1.cdr = $e2);
-    (setq $var:ident ( $($e: tt)+ ) ) => ($var = lisp!( $($e)+););
-    (setq $var:ident $e:expr) => ($var = $e);
+    // setf
+    (setf (car $e1:tt) ( $($e: tt)+ ) ) => ($e1.car = lisp!( $($e)+));
+    (setf (cdr $e1:tt) ( $($e: tt)+ ) ) => ($e1.cdr = lisp!( $($e)+));
+    (setf (car $e1:tt) $e2:expr) => ($e1.car = $e2);
+    (setf (cdr $e1:tt) $e2:expr) => ($e1.cdr = $e2);
+    (setf $var:ident ( $($e: tt)+ ) ) => ($var = lisp!( $($e)+););
+    (setf $var:ident $e:expr) => ($var = $e);
     // eq
     (eq ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) == lisp!( $($e2)+));
     (eq $e1:tt ( $($e: tt)+ ) ) => ($e1 == lisp!( $($e)+) );
     (eq $e1:tt $e2:tt) => ($e1 == $e2);
+    // compare
+    (== ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) == lisp!( $($e2)+));
+    (== $e1:tt ( $($e: tt)+ ) ) => ($e1 == lisp!( $($e)+) );
+    (== $e1:tt $e2:tt) => ($e1 == $e2);
+    (!= ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) != lisp!( $($e2)+));
+    (!= $e1:tt ( $($e: tt)+ ) ) => ($e1 != lisp!( $($e)+) );
+    (!= $e1:tt $e2:tt) => ($e1 != $e2);
+    (< ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) < lisp!( $($e2)+));
+    (< $e1:tt ( $($e: tt)+ ) ) => ($e1 < lisp!( $($e)+) );
+    (< $e1:tt $e2:tt) => ($e1 < $e2);
+    (> ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) > lisp!( $($e2)+));
+    (> $e1:tt ( $($e: tt)+ ) ) => ($e1 > lisp!( $($e)+) );
+    (> $e1:tt $e2:tt) => ($e1 > $e2);
+    (<= ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) <= lisp!( $($e2)+));
+    (<= $e1:tt ( $($e: tt)+ ) ) => ($e1 <= lisp!( $($e)+) );
+    (<= $e1:tt $e2:tt) => ($e1 <= $e2);    
+    (>= ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) >= lisp!( $($e2)+));
+    (>= $e1:tt ( $($e: tt)+ ) ) => ($e1 >= lisp!( $($e)+) );
+    (>= $e1:tt $e2:tt) => ($e1 >= $e2);
     // macro util
     (print $( $e:tt )+) => ( print!( $($e),+ ) );
     (println $( $e:tt )+) => ( println!( $($e),+ ) );
@@ -93,12 +120,15 @@ macro_rules! lisp {
     (debug_assert_eq $e1:tt $e2:tt) => ( debug_assert_eq!($e1, $e2); );
     // +,-,*,/,%
     (+ $x:tt $y:tt) => ($x + $y); 
-    (- $x:tt $y:tt) => ($x - $y); 
+    (- $x:tt $y:tt) => ($x - $y);
+    (* $x:tt ( $( $e:tt )+ ) ) => ($x * lisp!( $($e)+ )); 
     (* $x:tt $y:tt) => ($x * $y); 
     (/ $x:tt $y:tt) => ($x / $y); 
-    (% $x:tt $y:tt) => ($x % $y); 
+    (% $x:tt $y:tt) => ($x % $y);
     // funcall
-    ($sym:ident $( $e:tt )* ) => ( $sym( $($e),* ); );
+    ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
+    ($sym:ident $( $e:tt )* ) => ( $sym( lisp!( $($e),* ) ); );
+    //($sym:path ( $( $e:tt )* )) => ( $sym( $($e),* ); );
     // execute rust expr
     (rust $( $e:tt )* ) => ( $($e);* );
     // other
