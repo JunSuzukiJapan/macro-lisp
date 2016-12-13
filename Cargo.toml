@@ -1,5 +1,5 @@
 [package]
-name = "lisp"
+name = "macro_lisp"
 version = "0.1.0"
 authors = ["Jun Suzuki <jun.suzuki.japan@gmail.com>"]
 
