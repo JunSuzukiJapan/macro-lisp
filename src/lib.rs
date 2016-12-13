@@ -18,8 +18,19 @@ macro_rules! lisp {
             $( lisp!( $($e)* ) );*
         }
     );
+    (defun $sym:ident ( $( ( $name:ident $typ:ty ) )* )
+        $( ( $($e:tt)* ))*
+    ) => (
+        fn $sym( $($name : $typ),* ) {
+            $( lisp!( $($e)* ) );*
+        }
+    );
     // +,-,*,/,%
     (+ $x:tt $y:tt) => ($x + $y); 
+    (- $x:tt $y:tt) => ($x - $y); 
+    (* $x:tt $y:tt) => ($x * $y); 
+    (/ $x:tt $y:tt) => ($x / $y); 
+    (% $x:tt $y:tt) => ($x % $y); 
     // defconstant
     (defconstant ($var:ident $typ:ty) ( $($e: tt)+ ) ) => (let $var:$typ = lisp!( $($e)+););
     (defconstant ($var:ident $typ:ty) $e:expr) => (let $var:$typ = $e;);

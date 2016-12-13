@@ -13,10 +13,14 @@ mod tests {
         (+ x y)
     );
 
+    lisp!(defun do_nothing());
+
     #[test]
     fn test_defun(){
         let x = lisp!(add 3 4);
         assert_eq!(7, x);
+
+        do_nothing();
     }
 
     #[test]
