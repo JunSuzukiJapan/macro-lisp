@@ -9,10 +9,10 @@ macro_rules! lisp {
     // progn
     (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
     // if
-    (if ( $($cond:tt)* ) $e1:tt $e2:tt) => (if lisp!($($cond)*) { args!($e1) }else{ args!($e2) });
-    (if ( $($cond:tt)* ) $e:tt) => (if lisp!($($cond)*) { args!($e) });
-    (if $cond:tt $e1:tt $e2:tt) => (if $cond { args!($e1) }else{ args!($e2) });
-    (if $cond:tt $e:tt) => (if $cond { args!($e) });
+    (if ( $($cond:tt)* ) $e1:tt $e2:tt) => (if lisp!($($cond)*) { lisp_arg!($e1) }else{ lisp_arg!($e2) });
+    (if ( $($cond:tt)* ) $e:tt) => (if lisp!($($cond)*) { lisp_arg!($e) });
+    (if $cond:tt $e1:tt $e2:tt) => (if $cond { lisp_arg!($e1) }else{ lisp_arg!($e2) });
+    (if $cond:tt $e:tt) => (if $cond { lisp_arg!($e) });
 
      // extern crate
     ( $(#[$m:meta])* extern-crate $sym:ident) => ($(#[$m]);* extern crate $sym;);
@@ -80,7 +80,7 @@ macro_rules! lisp {
 
     (defvar $var:ident ( $($e: tt)+ )) => (let mut $var = lisp!( $($e)+););
     (defvar $var:ident $e:expr) => (let mut $var = $e;);
-    //(defvar $var:ident $e:tt) => (let mut $var = args!($e););
+    //(defvar $var:ident $e:tt) => (let mut $var = lisp_arg!($e););
 
     // cons, car, cdr
     (cons $car:tt $cdr:tt) => ($crate::Cons{car: $car, cdr: $cdr});
@@ -95,13 +95,13 @@ macro_rules! lisp {
     (setf $var:ident $e:expr) => ($var = $e);
 
     // compare
-    (eq $x:tt $y:tt) => (args!($x) == args!($y)); 
-    (== $x:tt $y:tt) => (args!($x) == args!($y)); 
-    (!= $x:tt $y:tt) => (args!($x) != args!($y)); 
-    (< $x:tt $y:tt) => (args!($x) < args!($y)); 
-    (> $x:tt $y:tt) => (args!($x) > args!($y)); 
-    (<= $x:tt $y:tt) => (args!($x) <= args!($y)); 
-    (>= $x:tt $y:tt) => (args!($x) >= args!($y)); 
+    (eq $x:tt $y:tt) => (lisp_arg!($x) == lisp_arg!($y)); 
+    (== $x:tt $y:tt) => (lisp_arg!($x) == lisp_arg!($y)); 
+    (!= $x:tt $y:tt) => (lisp_arg!($x) != lisp_arg!($y)); 
+    (< $x:tt $y:tt) => (lisp_arg!($x) < lisp_arg!($y)); 
+    (> $x:tt $y:tt) => (lisp_arg!($x) > lisp_arg!($y)); 
+    (<= $x:tt $y:tt) => (lisp_arg!($x) <= lisp_arg!($y)); 
+    (>= $x:tt $y:tt) => (lisp_arg!($x) >= lisp_arg!($y)); 
 
     // macro util
     (print $( $e:tt )+) => ( print!( $($e),+ ) );
@@ -111,16 +111,16 @@ macro_rules! lisp {
     (debug_assert $e1:tt $e2:tt) => ( debug_assert!($e1, $e2); );
     (debug_assert_eq $e1:tt $e2:tt) => ( debug_assert_eq!($e1, $e2); );
     // +,-,*,/,%
-    (+ $x:tt $y:tt) => (args!($x) + args!($y)); 
-    (- $x:tt $y:tt) => (args!($x) - args!($y)); 
-    (* $x:tt $y:tt) => (args!($x) * args!($y)); 
-    (/ $x:tt $y:tt) => (args!($x) / args!($y)); 
-    (% $x:tt $y:tt) => (args!($x) % args!($y)); 
+    (+ $x:tt $y:tt) => (lisp_arg!($x) + lisp_arg!($y)); 
+    (- $x:tt $y:tt) => (lisp_arg!($x) - lisp_arg!($y)); 
+    (* $x:tt $y:tt) => (lisp_arg!($x) * lisp_arg!($y)); 
+    (/ $x:tt $y:tt) => (lisp_arg!($x) / lisp_arg!($y)); 
+    (% $x:tt $y:tt) => (lisp_arg!($x) % lisp_arg!($y)); 
 
     // funcall
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
     //( ( $sym:tt $($e:tt)* ) ) => ( lisp!( $sym $($e)* ) );
-    ($sym:ident $( $e:tt )* ) => ( $sym ( $(args!($e)),* ) );
+    ($sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
 
     // execute rust expr
     (rust $( $e:tt )* ) => ( $($e);* );
@@ -129,7 +129,7 @@ macro_rules! lisp {
 }
 
 #[macro_export]
-macro_rules! args {
+macro_rules! lisp_arg {
     ( ( $e:tt ) ) => (lisp!($e));
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
     ($e:expr) => ($e);
