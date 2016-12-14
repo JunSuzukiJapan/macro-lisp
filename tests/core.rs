@@ -1,7 +1,7 @@
 #![allow(unused_variables)]
 #![allow(unused_mut)]
 #![allow(dead_code)]
-#![feature(trace_macros)]
+//#![feature(trace_macros)]
 
 #[macro_use]
 extern crate macro_lisp;
@@ -40,7 +40,7 @@ mod tests {
 
     lisp!(defun do_nothing());
 
-    trace_macros!(true);
+    //trace_macros!(true);
 
     #[test]
     fn test_defun(){
@@ -49,7 +49,8 @@ mod tests {
 
         do_nothing();
     }
-    trace_macros!(false);
+
+    //trace_macros!(false);
 
     #[test]
     fn test_macro_utils(){
