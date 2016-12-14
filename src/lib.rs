@@ -83,7 +83,7 @@ macro_rules! lisp {
     //(defvar $var:ident $e:tt) => (let mut $var = args!($e););
 
     // cons, car, cdr
-    (cons $car:tt $cdr:tt) => (Cons{car: $car, cdr: $cdr});
+    (cons $car:tt $cdr:tt) => ($crate::Cons{car: $car, cdr: $cdr});
     (car $cell:tt) => ($cell.car);
     (cdr $cell:tt) => ($cell.cdr);
     // setf
