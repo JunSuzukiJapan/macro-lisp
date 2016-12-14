@@ -10,9 +10,20 @@ macro_rules! lisp {
     (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
     // if
     (if ( $($cond:tt)* ) ( $($e1:tt)* ) ( $($e2:tt)* )) => (if lisp!($($cond)*) { lisp!($($e1)*) }else{ lisp!($($e2)*) });
+    (if ( $($cond:tt)* ) ( $($e1:tt)* ) $e2:tt ) => (if lisp!($($cond)*) { lisp!($($e1)*) }else{ $e2 });
+    (if ( $($cond:tt)* ) $e1:tt ( $($e2:tt)* )) => (if lisp!($($cond)*) { $e1 }else{ lisp!($($e2)*) });
+    (if ( $($cond:tt)* ) $e1:tt $e2:tt) => (if lisp!($($cond)*) { $e1 }else{ $e2 });
+
     (if ( $($cond:tt)* ) ( $($e:tt)* )) => (if lisp!($($cond)*) { lisp!($($e)*) });
+    (if ( $($cond:tt)* ) $e:tt) => (if lisp!($($cond)*) { $e });
+
     (if $cond:tt ( $($e1:tt)* ) ( $($e2:tt)* )) => (if $cond { lisp!($($e1)*) }else{ lisp!($($e2)*) });
+    (if $cond:tt ( $($e1:tt)* ) $e2:tt) => (if $cond { lisp!($($e1)*) }else{ $e2 });
+    (if $cond:tt $e1:tt ( $($e2:tt)* )) => (if $cond { $e1 }else{ lisp!($($e2)*) });
+    (if $cond:tt $e1:tt $e2:tt) => (if $cond { $e1 }else{ $e2 });
+
     (if $cond:tt ( $($e:tt)* )) => (if $cond { lisp!($($e)*) });
+    (if $cond:tt $e:tt) => (if $cond { $e });
      // extern crate
     ( $(#[$m:meta])* extern-crate $sym:ident) => ($(#[$m]);* extern crate $sym;);
     // use
