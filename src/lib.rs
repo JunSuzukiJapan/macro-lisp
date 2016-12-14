@@ -14,6 +14,12 @@ macro_rules! lisp {
     (if $cond:tt $e1:tt $e2:tt) => (if $cond { lisp_arg!($e1) }else{ lisp_arg!($e2) });
     (if $cond:tt $e:tt) => (if $cond { lisp_arg!($e) });
 
+    // when unless
+    (when ( $($cond:tt)* ) $e:tt) => (if lisp!($($cond)*) { lisp_arg!($e) });
+    (when $cond:tt $e:tt) => (if $cond { lisp_arg!($e) });
+    (unless ( $($cond:tt)* ) $e:tt) => (if ! (lisp!($($cond)*)) { lisp_arg!($e) });
+    (unless $cond:tt $e:tt) => (if !($cond) { lisp_arg!($e) });
+
      // extern crate
     ( $(#[$m:meta])* extern-crate $sym:ident) => ($(#[$m]);* extern crate $sym;);
 
