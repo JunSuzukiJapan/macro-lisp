@@ -1,5 +1,5 @@
 // run command:
-//    $ rustup run nightly cargo run  --example factorial
+//    $ rustup run nightly cargo run --example factorial
 //
 // if not install nightly, then
 //    $ rustup install nightly

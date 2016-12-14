@@ -1,24 +1,18 @@
+// run command:
+//    $ rustup run nightly cargo run --example hello
+//
+// if not install nightly, then
+//    $ rustup install nightly
+
 #[macro_use]
 extern crate macro_lisp;
 
 lisp!(pub module module_test
     (pub defun hello () ()
-        (println "Hello")
+        (println "Hello, macro-lisp!")
     )
 );
 
-pub mod test {
-    pub fn hello2(){
-        println!("Hello");
-    }
-}
-
-/*
 lisp!(defun main () ()
-    (test::hello2)
+    (module_test::hello)
 );
-*/
-
-fn main(){
-    test::hello2();
-}

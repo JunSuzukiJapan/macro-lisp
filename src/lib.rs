@@ -120,6 +120,7 @@ macro_rules! lisp {
     // funcall
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
     //( ( $sym:tt $($e:tt)* ) ) => ( lisp!( $sym $($e)* ) );
+    (  $sym:ident :: $( $sym2:ident )::+ $( $e:tt )* ) => ( $sym::$( $sym2 )::+ ( $(lisp_arg!($e)),* ) );
     ($sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
 
     // execute rust expr
