@@ -167,11 +167,8 @@ macro_rules! lisp {
     (% $x:tt $y:tt) => ($x % $y);
 
     // funcall
-    //( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
-    ( ( $sym:tt $($e:tt)* ) ) => ( lisp!( $sym $($e)* ) );
-    ($sym:ident ( $e1:tt )) => ( $sym(args!($e1)) );
-    //($sym:ident $e1:expr) => ( $sym($e1) );
-    ($sym:ident $e1:tt $e2:tt) => ( $sym($e1, $e2) );
+    ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
+    //( ( $sym:tt $($e:tt)* ) ) => ( lisp!( $sym $($e)* ) );
     ($sym:ident $( $e:tt )* ) => ( $sym ( $(args!($e)),* ) );
 
     // execute rust expr
