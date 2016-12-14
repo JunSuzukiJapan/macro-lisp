@@ -16,8 +16,10 @@ macro_rules! lisp {
 
      // extern crate
     ( $(#[$m:meta])* extern-crate $sym:ident) => ($(#[$m]);* extern crate $sym;);
+
     // use
     (use $sym:tt) => (use $sym;);
+
     // mod
     ( $(#[$m:meta])* module $sym:ident
         $( ( $($e:tt)* ))*
@@ -35,6 +37,7 @@ macro_rules! lisp {
              $( lisp!( $($e)* ); )*
          }
     );
+
     // defun
     ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
         $( ( $($e:tt)* ))*
@@ -68,11 +71,13 @@ macro_rules! lisp {
             $( lisp!( $($e)* ) );*
         }
     );
+
     // defconstant
     (defconstant ($var:ident $typ:ty) ( $($e: tt)+ ) ) => (let $var:$typ = lisp!( $($e)+););
     (defconstant ($var:ident $typ:ty) $e:expr) => (let $var:$typ = $e;);
     (defconstant $var:ident ( $($e: tt)+ ) ) => (let $var = lisp!( $($e)+ ););
     (defconstant $var:ident $e:expr) => (let $var = $e;);
+
     // defvar
     (defvar ($var:ident $typ:ty) ( $($e: tt)+ )) => (let mut $var:$typ = lisp!( $($e)+););
     (defvar ($var:ident $typ:ty) $e:expr) => (let mut $var:$typ = $e;);
@@ -110,6 +115,7 @@ macro_rules! lisp {
     (assert_eq $e1:tt $e2:tt) => ( assert_eq!($e1, $e2); );
     (debug_assert $e1:tt $e2:tt) => ( debug_assert!($e1, $e2); );
     (debug_assert_eq $e1:tt $e2:tt) => ( debug_assert_eq!($e1, $e2); );
+
     // +,-,*,/,%
     (+ $x:tt $y:tt) => (lisp_arg!($x) + lisp_arg!($y)); 
     (- $x:tt $y:tt) => (lisp_arg!($x) - lisp_arg!($y)); 
@@ -119,7 +125,6 @@ macro_rules! lisp {
 
     // funcall
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
-    //( ( $sym:tt $($e:tt)* ) ) => ( lisp!( $sym $($e)* ) );
     (  $sym:ident :: $( $sym2:ident )::+ $( $e:tt )* ) => ( $sym::$( $sym2 )::+ ( $(lisp_arg!($e)),* ) );
     ($sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
 
