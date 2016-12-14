@@ -1,4 +1,4 @@
-#[derive(Debug)]
+ #[derive(Debug)]
 pub struct Cons<T, U> {
     pub car: T,
     pub cdr: U 
@@ -144,7 +144,7 @@ macro_rules! lisp {
     (+ ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) + lisp!( $($e2)+));
     (+ $e1:tt ( $($e: tt)+ ) ) => ($e1 + lisp!( $($e)+) );
     (+ ( $($e1: tt)+ ) $e2:tt) => (lisp!( $($e1)+ ) + $e2);
-    (+ $x:tt $y:tt) => ($x + $y); 
+    (+ $x:tt $y:tt) => ($x + $y);
 
     (- ( $($e1: tt)+ ) ( $($e2: tt)+ ) ) => (lisp!( $($e1)+) - lisp!( $($e2)+));
     (- $e1:tt ( $($e: tt)+ ) ) => ($e1 - lisp!( $($e)+) );
@@ -165,13 +165,24 @@ macro_rules! lisp {
     (% $e1:tt ( $($e: tt)+ ) ) => ($e1 % lisp!( $($e)+) );
     (% ( $($e1: tt)+ ) $e2:tt) => (lisp!( $($e1)+ ) % $e2);
     (% $x:tt $y:tt) => ($x % $y);
+
     // funcall
-    ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
-    //($sym:ident $( $e:tt )* ) => ( $sym ( lisp!( $($e),* ) ) );
-    ($sym:ident $( $e:tt )* ) => ( $sym ( $($e),* ) );
-    //($sym:path ( $( $e:tt )* )) => ( $sym( $($e),* ); );
+    //( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
+    ( ( $sym:tt $($e:tt)* ) ) => ( lisp!( $sym $($e)* ) );
+    ($sym:ident ( $e1:tt )) => ( $sym(args!($e1)) );
+    //($sym:ident $e1:expr) => ( $sym($e1) );
+    ($sym:ident $e1:tt $e2:tt) => ( $sym($e1, $e2) );
+    ($sym:ident $( $e:tt )* ) => ( $sym ( $(args!($e)),* ) );
+
     // execute rust expr
     (rust $( $e:tt )* ) => ( $($e);* );
     // other
-    ($e:tt) => ($e);
+    ($e:expr) => ($e);
+}
+
+#[macro_export]
+macro_rules! args {
+    ( ( $e:tt ) ) => (lisp!($e));
+    ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
+    ($e:expr) => ($e);
 }

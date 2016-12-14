@@ -34,6 +34,10 @@ mod tests {
         (println "Hello")
     );
 
+    lisp!(defun add1 ((x i32)) i32
+        (+ x 1)
+    );
+
     lisp!(defun add ((x i32) (y i32)) i32
         (+ x y)
     );
@@ -44,6 +48,9 @@ mod tests {
 
     #[test]
     fn test_defun(){
+        let x = lisp!(add1 5);
+        assert_eq!(6, x);
+
         let x = lisp!(add 3 4);
         assert_eq!(7, x);
 
