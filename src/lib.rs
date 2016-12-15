@@ -37,6 +37,18 @@ macro_rules! lisp {
         lisp_arg!($result)
     });
 
+    // doiter
+    (doiter ($var:ident #( $($e:tt)* ) ) $( ( $($e2:tt)* ) )* ) => (
+        for $var in vec![$(lisp_arg!($e)),*] {
+            $( lisp!( $($e2)* ) );*
+        }
+    );
+    (doiter ($var:ident $iter:tt) $( ( $($e:tt)* ) )* ) => (
+        for $var in lisp_arg!($iter) {
+            $( lisp!( $($e)* ) );*
+        }
+    );
+
     // progn
     (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
 
@@ -174,13 +186,19 @@ macro_rules! lisp {
     (1+ $e:tt) => (lisp_arg!($e) + 1);
     (1- $e:tt) => (lisp_arg!($e) - 1);
 
+    // list -> tuple
+    (quote ($($e:tt)*) ) => ( ($(lisp_arg!($e)),*) );
+
+    // vec
+    (# ($($e:tt)*) ) => ( vec![$(lisp_arg!($e)),*] );
+
     // funcall
-    ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
+    //( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
     (  $sym:ident :: $( $sym2:ident )::+ $( $e:tt )* ) => ( $sym::$( $sym2 )::+ ( $(lisp_arg!($e)),* ) );
     ($sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
 
     // execute rust expr
-    (rust $( $e:tt )* ) => ( $($e);* );
+    (rust $( $st:stmt )* ) => ( $($st);* );
     // other
     ($e:expr) => ($e);
 }

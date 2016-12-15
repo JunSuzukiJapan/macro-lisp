@@ -11,6 +11,21 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_doiter(){
+        let vec = lisp!(#(1 2 3 4 5));
+        lisp!(let ((x 0))
+            (doiter (num vec)
+                (setf x (+ x num)))
+            (assert_eq 15 x)
+        );
+        lisp!(let ((x 0))
+            (doiter (num #(1 2 3 4 5))
+                (setf x (+ x num)))
+            (assert_eq 15 x)
+        );
+    }
+
+    #[test]
     fn test_do(){
         lisp!(progn
             (defconstant num
