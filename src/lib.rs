@@ -6,6 +6,8 @@ pub struct Cons<T, U> {
 
 #[macro_export]
 macro_rules! lisp {
+    // while
+    (while $cond:tt $( ( $($e:tt)* ) )* ) => ( while lisp_arg!($cond) { $( lisp!( $($e)* ) );* });
     // progn
     (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
     // if
@@ -97,6 +99,7 @@ macro_rules! lisp {
     (cons $car:tt $cdr:tt) => ($crate::Cons{car: $car, cdr: $cdr});
     (car $cell:tt) => ($cell.car);
     (cdr $cell:tt) => ($cell.cdr);
+
     // setf
     (setf (car $e1:tt) ( $($e: tt)+ ) ) => ($e1.car = lisp!( $($e)+));
     (setf (cdr $e1:tt) ( $($e: tt)+ ) ) => ($e1.cdr = lisp!( $($e)+));
@@ -127,7 +130,15 @@ macro_rules! lisp {
     (- $x:tt $y:tt) => (lisp_arg!($x) - lisp_arg!($y)); 
     (* $x:tt $y:tt) => (lisp_arg!($x) * lisp_arg!($y)); 
     (/ $x:tt $y:tt) => (lisp_arg!($x) / lisp_arg!($y)); 
-    (% $x:tt $y:tt) => (lisp_arg!($x) % lisp_arg!($y)); 
+    (% $x:tt $y:tt) => (lisp_arg!($x) % lisp_arg!($y));
+
+    // incf,decf
+    (incf (car $e1:tt)) => ($e1.car = $e1.car + 1);
+    (incf (cdr $e1:tt)) => ($e1.cdr = $e1.cdr + 1);
+    (incf $var:ident) => ($var = $var + 1);
+    (decf (car $e1:tt)) => ($e1.car = $e1.car - 1);
+    (decf (cdr $e1:tt)) => ($e1.cdr = $e1.cdr - 1);
+    (cecf $var:ident) => ($var = $var - 1);
 
     // funcall
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );

@@ -11,6 +11,16 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_while(){
+        lisp!(progn
+            (defvar x 0)
+            (while (< x 10)
+                (incf x))
+            (assert_eq x 10)
+        );
+    }
+
+    #[test]
     fn test_when_unless(){
         lisp!(progn
             (defvar x 0)
