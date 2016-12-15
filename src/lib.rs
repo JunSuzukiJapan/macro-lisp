@@ -170,6 +170,10 @@ macro_rules! lisp {
     (decf (cdr $e1:tt)) => ($e1.cdr = $e1.cdr - 1);
     (decf $var:ident) => ($var = $var - 1);
 
+    // 1+,1-
+    (1+ $e:tt) => (lisp_arg!($e) + 1);
+    (1- $e:tt) => (lisp_arg!($e) - 1);
+
     // funcall
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
     (  $sym:ident :: $( $sym2:ident )::+ $( $e:tt )* ) => ( $sym::$( $sym2 )::+ ( $(lisp_arg!($e)),* ) );

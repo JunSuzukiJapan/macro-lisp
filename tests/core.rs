@@ -14,7 +14,7 @@ mod tests {
     fn test_do(){
         lisp!(progn
             (defconstant num
-                (do ((x 0 (+ x 1))
+                (do ((x 0 (1+ x))
                      (y 0 (+ y 2)))
                 ((> x 5) y)))
             (assert_eq num 12)
