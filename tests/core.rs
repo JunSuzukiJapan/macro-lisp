@@ -11,6 +11,17 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_do(){
+        lisp!(progn
+            (defconstant num
+                (do ((x 0 (+ x 1))
+                     (y 0 (+ y 2)))
+                ((> x 5) y)))
+            (assert_eq num 12)
+        );
+    }
+
+    #[test]
     fn test_let(){
         lisp!(progn
             (defconstant x 3)

@@ -24,6 +24,19 @@ macro_rules! lisp {
         }
     );
 
+    // do
+    (do ( $( ($var:ident $init:tt $step:tt) )* )
+        ($cond:tt $result:tt)
+        $( ( $($e:tt)* ) )*
+    ) => ({
+        $(let mut $var = lisp_arg!($init);)*
+        while !(lisp_arg!($cond)) {
+            $( lisp!( $($e)* ) );*
+            $($var = lisp_arg!($step);)*
+        }
+        lisp_arg!($result)
+    });
+
     // progn
     (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
 
