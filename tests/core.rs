@@ -11,6 +11,22 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_let(){
+        lisp!(progn
+            (defconstant x 3)
+            (defconstant y 5)
+            (let ((x 1)
+                  (y 2))
+                (incf x)
+                (decf y)
+                (assert_eq x 2)
+                (assert_eq y 1))
+            (assert_eq x 3)
+            (assert_eq y 5)
+        );
+    }
+
+    #[test]
     fn test_dotimes(){
         lisp!(progn
             (defvar x 0)

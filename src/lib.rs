@@ -6,16 +6,27 @@ pub struct Cons<T, U> {
 
 #[macro_export]
 macro_rules! lisp {
+    // let
+    (let ( $( ($var:ident $e:tt) )* )
+        $( ( $($e2:tt)* ) )*
+    ) => ({
+        $(let mut $var = lisp_arg!($e);)*
+        $( lisp!( $($e2)* ) );*
+    });
+
     // while
     (while $cond:tt $( ( $($e:tt)* ) )* ) => ( while lisp_arg!($cond) { $( lisp!( $($e)* ) );* });
+
     // dotimes
     (dotimes ($var:ident $count:tt) $( ( $($e:tt)* ) )* ) => (
         for $var in 0..lisp_arg!($count) {
             $( lisp!( $($e)* ) );*
         }
     );
+
     // progn
     (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
+
     // if
     (if ( $($cond:tt)* ) $e1:tt $e2:tt) => (if lisp!($($cond)*) { lisp_arg!($e1) }else{ lisp_arg!($e2) });
     (if ( $($cond:tt)* ) $e:tt) => (if lisp!($($cond)*) { lisp_arg!($e) });
@@ -144,7 +155,7 @@ macro_rules! lisp {
     (incf $var:ident) => ($var = $var + 1);
     (decf (car $e1:tt)) => ($e1.car = $e1.car - 1);
     (decf (cdr $e1:tt)) => ($e1.cdr = $e1.cdr - 1);
-    (cecf $var:ident) => ($var = $var - 1);
+    (decf $var:ident) => ($var = $var - 1);
 
     // funcall
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
