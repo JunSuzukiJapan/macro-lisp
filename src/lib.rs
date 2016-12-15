@@ -8,6 +8,12 @@ pub struct Cons<T, U> {
 macro_rules! lisp {
     // while
     (while $cond:tt $( ( $($e:tt)* ) )* ) => ( while lisp_arg!($cond) { $( lisp!( $($e)* ) );* });
+    // dotimes
+    (dotimes ($var:ident $count:tt) $( ( $($e:tt)* ) )* ) => (
+        for $var in 0..lisp_arg!($count) {
+            $( lisp!( $($e)* ) );*
+        }
+    );
     // progn
     (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
     // if

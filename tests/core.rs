@@ -11,6 +11,16 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_dotimes(){
+        lisp!(progn
+            (defvar x 0)
+            (dotimes (y 5)
+                (setf x (+ x y)))
+            (assert_eq x 10)
+        );
+    }
+
+    #[test]
     fn test_while(){
         lisp!(progn
             (defvar x 0)
