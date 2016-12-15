@@ -11,6 +11,25 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_when_unless(){
+        lisp!(progn
+            (defvar x 0)
+            (when true
+                (setf x 1))
+            (when false
+                (setf x 2))
+            (assert_eq 1 x)
+
+            (defvar y 0)
+            (unless true
+                (setf y 1))
+            (unless false
+                (setf y 2))
+            (assert_eq y 2)
+        );
+    }
+
+    #[test]
     fn test_progn(){
         lisp!(progn
             (defconstant x 3)
