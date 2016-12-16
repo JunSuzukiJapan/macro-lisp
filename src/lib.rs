@@ -6,6 +6,41 @@ pub struct Cons<T, U> {
 
 #[macro_export]
 macro_rules! lisp {
+    // with-xxx
+    (with_input_from_file ($var:ident $path:tt)
+        $( ( $($e2:tt)* ) )*
+    ) => ({
+        use std;
+        use std::io::Read;
+        let mut $var = std::fs::File::open(lisp_arg!($path)).unwrap();
+        $( lisp!( $($e2)* ) );*
+    });
+
+    (with_output_to_new_file ($var:ident $path:tt)
+        $( ( $($e2:tt)* ) )*
+    ) => ({
+        use std;
+        use std::io::Write;
+        let mut $var = std::fs::File::create(lisp_arg!($path)).unwrap();
+        $( lisp!( $($e2)* ) );*        
+    });
+    /*
+    (with_output_to_string ($var:ident)  $( ( $($e2:tt)* ) )* ) => (
+        let mut $var = String::new();
+        $( lisp!( $($e2)* ) );*        
+        $var
+    );
+
+    (with_input_from_string ($var:ident $s:tt)
+        $( ( $($e2:tt)* ) )*
+    ) => ({
+        let mut $var:&str = lisp_arg!($s); // check type
+        $( lisp!( $($e2)* ) );*        
+    });
+    */
+
+    (read_to_string $file:tt $s:ident) => (lisp_arg!($file).read_to_string(&mut $s));
+
     // let
     (let ( $( ($var:ident $e:tt) )* )
         $( ( $($e2:tt)* ) )*
@@ -100,9 +135,12 @@ macro_rules! lisp {
     );
 
     // lambda
-    (lambda ( $( ( $name:ident $typ:ty ) )* )
+    (lambda move ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
     ) => (| $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
+    (lambda ( $( ( $name:ident $typ:ty ) )* )
+        $( ( $($e:tt)* ))*
+    ) => (move | $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
 
     // defun
     ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
@@ -139,13 +177,13 @@ macro_rules! lisp {
     );
 
     // defconstant
-    (defconstant ($var:ident $typ:ty) ( $($e: tt)+ ) ) => (let $var:$typ = lisp!( $($e)+););
+    (defconstant ($var:ident $typ:ty) ( $($e:tt)+ ) ) => (let $var:$typ = lisp!( $($e)+););
     (defconstant ($var:ident $typ:ty) $e:expr) => (let $var:$typ = $e;);
-    (defconstant $var:ident ( $($e: tt)+ ) ) => (let $var = lisp!( $($e)+ ););
+    (defconstant $var:ident ( $($e:tt)+ ) ) => (let $var = lisp!( $($e)+ ););
     (defconstant $var:ident $e:expr) => (let $var = $e;);
 
     // defvar
-    (defvar ($var:ident $typ:ty) ( $($e: tt)+ )) => (let mut $var:$typ = lisp!( $($e)+););
+    (defvar ($var:ident $typ:ty) ( $($e:tt)+ )) => (let mut $var:$typ = lisp!( $($e)+););
     (defvar ($var:ident $typ:ty) $e:expr) => (let mut $var:$typ = $e;);
     //(defvar ($var:ident $typ:ty) $e:expr) => (let mut $var:$typ = $e;);
 
@@ -178,6 +216,7 @@ macro_rules! lisp {
     // macro util
     (print $( $e:tt )+) => ( print!( $($e),+ ) );
     (println $( $e:tt )+) => ( println!( $($e),+ ) );
+    (format $( $e:tt )+) =>( format!( $($e),+ ) );
     (assert $e1:tt $e2:tt) => ( assert!($e1, $e2); );
     (assert_eq $e1:tt $e2:tt) => ( assert_eq!($e1, $e2); );
     (debug_assert $e1:tt $e2:tt) => ( debug_assert!($e1, $e2); );
@@ -211,9 +250,10 @@ macro_rules! lisp {
     // funcall
     //( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
     (  $sym:ident :: $( $sym2:ident )::+ $( $e:tt )* ) => ( $sym::$( $sym2 )::+ ( $(lisp_arg!($e)),* ) );
+    (  $sym:ident . $( $sym2:ident ).+ $( $e:tt )* ) => ( $sym.$( $sym2 ).+ ( $(lisp_arg!($e)),* ) );
     ($sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
 
-    // execute rust expr
+    // execute rust
     (rust $( $st:stmt )* ) => ( $($st);* );
     // other
     ($e:expr) => ($e);
