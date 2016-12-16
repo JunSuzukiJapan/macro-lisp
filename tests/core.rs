@@ -12,6 +12,16 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_lambda(){
+        lisp!(progn
+            (defconstant f 
+                (lambda ((x i32)) (1+ x)))
+            (defconstant x (f 5))
+            (assert_eq 6 x)
+        );
+    }
+
+    #[test]
     fn test_loop_break(){
         lisp!(let ((x 0))
             (loop

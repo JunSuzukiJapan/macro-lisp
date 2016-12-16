@@ -1,7 +1,7 @@
  #[derive(Debug)]
 pub struct Cons<T, U> {
     pub car: T,
-    pub cdr: U 
+    pub cdr: U
 }
 
 #[macro_export]
@@ -98,6 +98,11 @@ macro_rules! lisp {
              $( lisp!( $($e)* ); )*
          }
     );
+
+    // lambda
+    (lambda ( $( ( $name:ident $typ:ty ) )* )
+        $( ( $($e:tt)* ))*
+    ) => (| $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
 
     // defun
     ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
