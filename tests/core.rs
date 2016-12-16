@@ -1,6 +1,7 @@
 #![allow(unused_variables)]
 #![allow(unused_mut)]
 #![allow(dead_code)]
+#![allow(unreachable_code)]
 //#![feature(trace_macros)]
 
 #[macro_use]
@@ -9,6 +10,21 @@ extern crate macro_lisp;
 #[cfg(test)]
 mod tests {
     use macro_lisp::*;
+
+    #[test]
+    fn test_loop_break(){
+        lisp!(let ((x 0))
+            (loop
+                (loop
+                    (break)
+                    (incf x)
+                )
+                (incf x)
+                (break)
+            )
+            (assert_eq 1 x)
+        );
+    }
 
     #[test]
     fn test_doiter(){

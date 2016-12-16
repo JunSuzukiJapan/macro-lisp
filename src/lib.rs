@@ -14,6 +14,21 @@ macro_rules! lisp {
         $( lisp!( $($e2)* ) );*
     });
 
+    // progn
+    (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
+
+    //
+    // Loops
+    //
+    (break) => (break;);
+    //(break : $label:item) => (break $label;);
+    (continue) => (continue;);
+    //(continue : $labl:item) => (continue $label;);
+
+    // loop
+    (loop $( ( $($e:tt)* ) )* ) => ( loop { $( lisp!( $($e)* ) );* });
+    //(: $label:ident loop $( ( $($e:tt)* ) )* ) => ($label: loop { $( lisp!( $($e)* ) );* });
+
     // while
     (while $cond:tt $( ( $($e:tt)* ) )* ) => ( while lisp_arg!($cond) { $( lisp!( $($e)* ) );* });
 
@@ -38,21 +53,15 @@ macro_rules! lisp {
     });
 
     // doiter
-    /*
-    (doiter ($var:ident #( $($e:tt)* ) ) $( ( $($e2:tt)* ) )* ) => (
-        for $var in vec![$(lisp_arg!($e)),*] {
-            $( lisp!( $($e2)* ) );*
-        }
-    );
-    */
     (doiter ($var:ident $iter:tt) $( ( $($e:tt)* ) )* ) => (
         for $var in lisp_arg!($iter) {
             $( lisp!( $($e)* ) );*
         }
     );
 
-    // progn
-    (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
+    //
+    // Branch
+    //
 
     // if
     (if ( $($cond:tt)* ) $e1:tt $e2:tt) => (if lisp!($($cond)*) { lisp_arg!($e1) }else{ lisp_arg!($e2) });
