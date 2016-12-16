@@ -12,14 +12,14 @@ mod tests {
 
     #[test]
     fn test_doiter(){
-        let vec = lisp!(#(1 2 3 4 5));
+        let vec = lisp!(vec 1 2 3 4 5);
         lisp!(let ((x 0))
             (doiter (num vec)
                 (setf x (+ x num)))
             (assert_eq 15 x)
         );
         lisp!(let ((x 0))
-            (doiter (num #(1 2 3 4 5))
+            (doiter (num (vec 1 2 3 4 5))
                 (setf x (+ x num)))
             (assert_eq 15 x)
         );

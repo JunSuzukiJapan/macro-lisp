@@ -38,11 +38,13 @@ macro_rules! lisp {
     });
 
     // doiter
+    /*
     (doiter ($var:ident #( $($e:tt)* ) ) $( ( $($e2:tt)* ) )* ) => (
         for $var in vec![$(lisp_arg!($e)),*] {
             $( lisp!( $($e2)* ) );*
         }
     );
+    */
     (doiter ($var:ident $iter:tt) $( ( $($e:tt)* ) )* ) => (
         for $var in lisp_arg!($iter) {
             $( lisp!( $($e)* ) );*
@@ -186,11 +188,11 @@ macro_rules! lisp {
     (1+ $e:tt) => (lisp_arg!($e) + 1);
     (1- $e:tt) => (lisp_arg!($e) - 1);
 
-    // list -> tuple
-    (quote ($($e:tt)*) ) => ( ($(lisp_arg!($e)),*) );
+    // tuple
+    (tuple $($e:tt)* ) => ( ($(lisp_arg!($e)),*) );
 
     // vec
-    (# ($($e:tt)*) ) => ( vec![$(lisp_arg!($e)),*] );
+    (vec $($e:tt)* ) => ( vec![$(lisp_arg!($e)),*] );
 
     // funcall
     //( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
