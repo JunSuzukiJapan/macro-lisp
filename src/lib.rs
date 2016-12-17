@@ -6,6 +6,39 @@ pub struct Cons<T, U> {
 
 #[macro_export]
 macro_rules! lisp {
+    // defstruct
+    ( $(#[$m:meta])* defstruct $struct_name:ident
+        (pub $( ($name:ident $typ:ty) )* )
+        ( $( ($name2:ident $typ2:ty) )* )
+    ) => (
+        $(#[$m]);*
+        struct $struct_name {
+            $( pub $name: $typ),*
+            ,
+            $( $name2: $typ2),*
+        }
+    );
+    ( $(#[$m:meta])* defstruct $struct_name:ident
+        (pub $( ($name:ident $typ:ty) )* )
+    ) => (
+        $(#[$m]);*
+        struct $struct_name {
+            $( pub $name: $typ),*
+        }
+    );
+    ( $(#[$m:meta])* defstruct $struct_name:ident
+        ( $( ($name:ident $typ:ty) )* )
+    ) => (
+        $(#[$m]);*
+        struct {
+            $( $name: $typ ),*
+        }
+    );
+    ( $(#[$m:meta])* defstruct $struct_name:ident) => (
+        $(#[$m]);*
+        struct $struct_name;
+    );
+
     // match
     (match $e:tt $( ( $pattern:pat => ( $($e2:tt)* ) ) )* ) => (
         match lisp_arg!($e) {

@@ -11,6 +11,32 @@ extern crate macro_lisp;
 mod tests {
     use macro_lisp::*;
 
+    lisp!(defstruct Person
+        (pub // public members
+            (name String)
+            (address String)
+        )
+        (    // non-public members
+         (age i32)
+        )
+    );
+
+    lisp!(defstruct Person2
+        (pub (age i32))
+    );
+
+
+//    lisp!(defstruct Point<T>
+//        ((x T) (y T))
+//    );
+
+    #[test]
+    fn test_struct(){
+        lisp!(progn
+
+        );
+    }
+
     #[test]
     fn test_match(){
         lisp!(progn 
