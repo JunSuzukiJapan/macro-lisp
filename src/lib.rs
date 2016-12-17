@@ -7,6 +7,33 @@ pub struct Cons<T, U> {
 #[macro_export]
 macro_rules! lisp {
     // defstruct
+    ( $(#[$m:meta])* defstruct $struct_name:ident < $($generic:ident),+ >
+        (pub $( ($name:ident $typ:ty) )* )
+        ( $( ($name2:ident $typ2:ty) )* )
+    ) => (
+        $(#[$m]);*
+        struct $struct_name < $($generic),+ > {
+            $( pub $name: $typ),*
+            ,
+            $( $name2: $typ2),*
+        }
+    );
+    ( $(#[$m:meta])* defstruct $struct_name:ident < $($generic:ident),+ >
+        (pub $( ($name:ident $typ:ty) )* )
+    ) => (
+        $(#[$m]);*
+        struct $struct_name < $($generic),+ > {
+            $( pub $name: $typ),*
+        }
+    );
+    ( $(#[$m:meta])* defstruct $struct_name:ident < $($generic:ident),+ >
+        ( $( ($name:ident $typ:ty) )* )
+    ) => (
+        $(#[$m]);*
+        struct $struct_name < $($generic),+ > {
+            $( $name: $typ ),*
+        }
+    );
     ( $(#[$m:meta])* defstruct $struct_name:ident
         (pub $( ($name:ident $typ:ty) )* )
         ( $( ($name2:ident $typ2:ty) )* )
@@ -30,7 +57,7 @@ macro_rules! lisp {
         ( $( ($name:ident $typ:ty) )* )
     ) => (
         $(#[$m]);*
-        struct {
+        struct $struct_name {
             $( $name: $typ ),*
         }
     );

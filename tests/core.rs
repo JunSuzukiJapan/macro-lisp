@@ -26,9 +26,9 @@ mod tests {
     );
 
 
-//    lisp!(defstruct Point<T>
-//        ((x T) (y T))
-//    );
+    lisp!(defstruct Point<T>
+        ((x T) (y T))
+    );
 
     #[test]
     fn test_struct(){
