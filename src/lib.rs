@@ -60,6 +60,11 @@ macro_rules! lisp {
     (flush $writable:tt) => (lisp_arg!($writable).flush());
 
     //
+    // for imple Seek
+    //
+    (seek $buffer:tt $e:tt) => (lisp_arg!($buffer).seek(lisp_arg!($e)));
+
+    //
     // for impl etc.
     //
     (by-ref $object:tt) => (lisp_arg!($object).by_ref());
