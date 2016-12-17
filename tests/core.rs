@@ -13,7 +13,13 @@ mod tests {
 
     #[test]
     fn test_match(){
-
+        let s = "test";
+        /*
+        lisp!(match s
+            ("test" (println "match1"))
+            (_ (println "all match"))
+        ;)
+        */
     }
 
     #[test]
@@ -23,6 +29,9 @@ mod tests {
                 (lambda ((x i32)) (1+ x)))
             (defconstant x (f 5))
             (assert-eq 6 x)
+
+            (defconstant y ((lambda ((x i32)) (* x x)) 4))
+            (assert-eq 16 y)
         );
     }
 

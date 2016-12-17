@@ -166,14 +166,6 @@ macro_rules! lisp {
          }
     );
 
-    // lambda
-    (lambda move ( $( ( $name:ident $typ:ty ) )* )
-        $( ( $($e:tt)* ))*
-    ) => (| $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
-    (lambda ( $( ( $name:ident $typ:ty ) )* )
-        $( ( $($e:tt)* ))*
-    ) => (move | $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
-
     // defun
     ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
         $( ( $($e:tt)* ))*
@@ -280,8 +272,19 @@ macro_rules! lisp {
     // vec
     (vec $($e:tt)* ) => ( vec![$(lisp_arg!($e)),*] );
 
+    // lambda
+    (lambda move ( $( ( $name:ident $typ:ty ) )* )
+        $( ( $($e:tt)* ))*
+    ) => (move | $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
+    (lambda ( $( ( $name:ident $typ:ty ) )* )
+        $( ( $($e:tt)* ))*
+    ) => (| $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
+
     // funcall
-    //( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
+    ((lambda ( ( $($name:ident $typ:ty)* ) ) $( ( $($e:tt)* ))* ) $($e2:tt)*) => (
+        (| $($name : $typ),* | { $( lisp!( $($e)* ) );* })( $(lisp_arg!($e2)),* )
+    );
+
     (  $sym:ident :: $( $sym2:ident )::+ $( $e:tt )* ) => ( $sym::$( $sym2 )::+ ( $(lisp_arg!($e)),* ) );
     (  $sym:ident . $( $sym2:ident ).+ $( $e:tt )* ) => ( $sym.$( $sym2 ).+ ( $(lisp_arg!($e)),* ) );
     ($sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
