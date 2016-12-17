@@ -13,13 +13,18 @@ mod tests {
 
     #[test]
     fn test_match(){
-        let s = "test";
-        /*
-        lisp!(match s
-            ("test" (println "match1"))
-            (_ (println "all match"))
-        ;)
-        */
+        lisp!(progn 
+            (defconstant s "test")
+
+            (defconstant x (match s
+                ("test" => (1))
+                (_ =>  (-1))))
+            (assert-eq 1 x)
+
+            (match s
+                ("hello" => (println "world"))
+                (_ => (println "Hum?")))
+        );
     }
 
     #[test]

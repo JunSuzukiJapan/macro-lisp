@@ -6,6 +6,13 @@ pub struct Cons<T, U> {
 
 #[macro_export]
 macro_rules! lisp {
+    // match
+    (match $e:tt $( ( $pattern:pat => ( $($e2:tt)* ) ) )* ) => (
+        match lisp_arg!($e) {
+            $($pattern => lisp_match_arg!($($e2)*) ),*
+        }
+    );
+
     // with-xxx
     (with-input-from-file ($var:ident $path:tt)
         $( ( $($e2:tt)* ) )*
@@ -82,7 +89,7 @@ macro_rules! lisp {
     });
 
     // progn
-    (progn $( ( $($e:tt)* ) )* ) => ( $( lisp!( $($e)* ) );* );
+    (progn $( ( $($e:tt)* ) )* ) => ({ $( lisp!( $($e)* ) );* });
 
     //
     // Loops
@@ -300,4 +307,10 @@ macro_rules! lisp_arg {
     ( ( $e:tt ) ) => (lisp!($e));
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
     ($e:expr) => ($e);
+}
+
+#[macro_export]
+macro_rules! lisp_match_arg {
+    ($e:expr) => ($e);
+    ( $($e:tt)* ) => (lisp!( $($e)* ));
 }
