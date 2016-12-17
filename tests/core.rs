@@ -12,6 +12,11 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_match(){
+        
+    }
+
+    #[test]
     fn test_lambda(){
         lisp!(progn
             (defconstant f 

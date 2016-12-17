@@ -14,11 +14,11 @@ mod file_tests {
     fn test_with_input_from_file(){
         lisp!(progn
             (defconstant filename "target/dummy.data")
-            (with_output_to_new_file (file filename)
+            (with-output-to-new-file (file filename)
                 (file.write_all b"Hello, world!"))
             (defvar s String::new())
-            (with_input_from_file (file filename)
-                (read_to_string file s))
+            (with-input-from-file (file filename)
+                (read-to-string file s))
             (assert_eq "Hello, world!" s)
         );
     }

@@ -7,7 +7,7 @@ pub struct Cons<T, U> {
 #[macro_export]
 macro_rules! lisp {
     // with-xxx
-    (with_input_from_file ($var:ident $path:tt)
+    (with-input-from-file ($var:ident $path:tt)
         $( ( $($e2:tt)* ) )*
     ) => ({
         use std;
@@ -16,7 +16,7 @@ macro_rules! lisp {
         $( lisp!( $($e2)* ) );*
     });
 
-    (with_output_to_new_file ($var:ident $path:tt)
+    (with-output-to-new-file ($var:ident $path:tt)
         $( ( $($e2:tt)* ) )*
     ) => ({
         use std;
@@ -39,7 +39,7 @@ macro_rules! lisp {
     });
     */
 
-    (read_to_string $file:tt $s:ident) => (lisp_arg!($file).read_to_string(&mut $s));
+    (read-to-string $file:tt $s:ident) => (lisp_arg!($file).read_to_string(&mut $s));
 
     // let
     (let ( $( ($var:ident $e:tt) )* )
