@@ -13,7 +13,7 @@ mod tests {
 
     #[test]
     fn test_match(){
-        
+
     }
 
     #[test]
@@ -22,7 +22,7 @@ mod tests {
             (defconstant f 
                 (lambda ((x i32)) (1+ x)))
             (defconstant x (f 5))
-            (assert_eq 6 x)
+            (assert-eq 6 x)
         );
     }
 
@@ -37,7 +37,7 @@ mod tests {
                 (incf x)
                 (break)
             )
-            (assert_eq 1 x)
+            (assert-eq 1 x)
         );
     }
 
@@ -47,12 +47,12 @@ mod tests {
         lisp!(let ((x 0))
             (doiter (num vec)
                 (setf x (+ x num)))
-            (assert_eq 15 x)
+            (assert-eq 15 x)
         );
         lisp!(let ((x 0))
             (doiter (num (vec 1 2 3 4 5))
                 (setf x (+ x num)))
-            (assert_eq 15 x)
+            (assert-eq 15 x)
         );
     }
 
@@ -63,7 +63,7 @@ mod tests {
                 (do ((x 0 (1+ x))
                      (y 0 (+ y 2)))
                 ((> x 5) y)))
-            (assert_eq num 12)
+            (assert-eq num 12)
         );
     }
 
@@ -76,10 +76,10 @@ mod tests {
                   (y 2))
                 (incf x)
                 (decf y)
-                (assert_eq x 2)
-                (assert_eq y 1))
-            (assert_eq x 3)
-            (assert_eq y 5)
+                (assert-eq x 2)
+                (assert-eq y 1))
+            (assert-eq x 3)
+            (assert-eq y 5)
         );
     }
 
@@ -89,7 +89,7 @@ mod tests {
             (defvar x 0)
             (dotimes (y 5)
                 (setf x (+ x y)))
-            (assert_eq x 10)
+            (assert-eq x 10)
         );
     }
 
@@ -99,7 +99,7 @@ mod tests {
             (defvar x 0)
             (while (< x 10)
                 (incf x))
-            (assert_eq x 10)
+            (assert-eq x 10)
         );
     }
 
@@ -111,14 +111,14 @@ mod tests {
                 (setf x 1))
             (when false
                 (setf x 2))
-            (assert_eq 1 x)
+            (assert-eq 1 x)
 
             (defvar y 0)
             (unless true
                 (setf y 1))
             (unless false
                 (setf y 2))
-            (assert_eq y 2)
+            (assert-eq y 2)
         );
     }
 
@@ -128,7 +128,7 @@ mod tests {
             (defconstant x 3)
             (defconstant y 4)
             (defvar z (* x y))
-            (assert_eq 12 z)
+            (assert-eq 12 z)
         );
     }
 

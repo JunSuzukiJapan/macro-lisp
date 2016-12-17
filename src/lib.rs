@@ -25,13 +25,13 @@ macro_rules! lisp {
         $( lisp!( $($e2)* ) );*        
     });
     /*
-    (with_output_to_string ($var:ident)  $( ( $($e2:tt)* ) )* ) => (
+    (with-output-to-string ($var:ident)  $( ( $($e2:tt)* ) )* ) => (
         let mut $var = String::new();
         $( lisp!( $($e2)* ) );*        
         $var
     );
 
-    (with_input_from_string ($var:ident $s:tt)
+    (with-input-from-string ($var:ident $s:tt)
         $( ( $($e2:tt)* ) )*
     ) => ({
         let mut $var:&str = lisp_arg!($s); // check type
@@ -39,7 +39,34 @@ macro_rules! lisp {
     });
     */
 
-    (read-to-string $file:tt $s:ident) => (lisp_arg!($file).read_to_string(&mut $s));
+    //
+    // for impl Read
+    //
+    (read $file:tt $s:ident) => (lisp_arg!($file).read(&mut lisp_arg!($s)));
+    (read-to-string $file:tt $s:ident) => (lisp_arg!($file).read_to_string(&mut lisp_arg!($s)));
+    (read-to-end $file:tt $s:ident) => (lisp_arg!($file).read_to_end(&mut lisp_arg!($s)));
+    (read-exact $file:tt $s:ident) => (lisp_arg!($file).read_exact(&mut lisp_arg!($s)));
+    (bytes $readable:tt) => (lisp_arg!($readable).bytes());
+    (chars $readable:tt) => (lisp_arg!($readable).chars());
+    (chain $readable:tt $next:tt) => (lisp_arg!($readable).chain($next));
+    (take $readable:tt $limit:tt) => (lisp_arg!($readable).take($limit));
+
+    //
+    // for impl Write
+    //
+    (write $buffer:tt $e:tt) => (lisp_arg!($buffer).write(lisp_arg!($e)));
+    (write-all $buffer:tt $e:tt) => (lisp_arg!($buffer).write_all(lisp_arg!($e)));
+    (write-format $buffer:tt $fmt:tt) => (lisp_arg!($buffer).write_fmt(lisp_arg!($fmt)));
+    (flush $writable:tt) => (lisp_arg!($writable).flush());
+
+    //
+    // for impl etc.
+    //
+    (by-ref $object:tt) => (lisp_arg!($object).by_ref());
+
+    //
+    // let,do,etc
+    //
 
     // let
     (let ( $( ($var:ident $e:tt) )* )
@@ -217,10 +244,11 @@ macro_rules! lisp {
     (print $( $e:tt )+) => ( print!( $($e),+ ) );
     (println $( $e:tt )+) => ( println!( $($e),+ ) );
     (format $( $e:tt )+) =>( format!( $($e),+ ) );
+    (format-args $( $e:tt )+) => ( format_args!( $($e),+ ) );
     (assert $e1:tt $e2:tt) => ( assert!($e1, $e2); );
-    (assert_eq $e1:tt $e2:tt) => ( assert_eq!($e1, $e2); );
-    (debug_assert $e1:tt $e2:tt) => ( debug_assert!($e1, $e2); );
-    (debug_assert_eq $e1:tt $e2:tt) => ( debug_assert_eq!($e1, $e2); );
+    (assert-eq $e1:tt $e2:tt) => ( assert_eq!($e1, $e2); );
+    (debug-assert $e1:tt $e2:tt) => ( debug_assert!($e1, $e2); );
+    (debug-assert-eq $e1:tt $e2:tt) => ( debug_assert_eq!($e1, $e2); );
 
     // +,-,*,/,%
     (+ $x:tt $y:tt) => (lisp_arg!($x) + lisp_arg!($y)); 

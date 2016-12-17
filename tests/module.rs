@@ -21,6 +21,6 @@ lisp!(module module_test
 
     (#[test] defun test_add () ()
         (defconstant num (add 1 2))
-        (assert_eq 3 num)
+        (assert-eq 3 num)
     )
 );
