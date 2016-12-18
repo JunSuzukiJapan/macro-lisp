@@ -66,9 +66,9 @@ macro_rules! lisp {
     );
 
     // match
-    (match $e:tt $( ( $pattern:pat => ( $($e2:tt)* ) ) )* ) => (
+    (match $e:tt $( ( $pattern:pat $(| $pat2:pat)* => ( $($e2:tt)* ) ) )* ) => (
         match lisp_arg!($e) {
-            $($pattern => lisp_match_arg!($($e2)*) ),*
+            $($pattern $(| $pat2)* => lisp_match_arg!($($e2)*) ),*
         }
     );
 

@@ -11,12 +11,11 @@ lisp!(use std::env);
 lisp!(use std::fs::File);
 lisp!(use std::io::Read);
 
-fn is_whitespace(b: u8) -> bool {
-    match b {
-        0x20 | 0x09 | 0x85 | 0x0a | 0x0b | 0x0c | 0x0d => true,
-        _ => false,
-    }
-}
+lisp!(defun is_whitespace ((b u8)) bool
+    (match b
+        (0x20 | 0x09 | 0x85 | 0x0a | 0x0b | 0x0c | 0x0d => (true))
+        (_ => (false) ))
+);
 
 fn main(){
     let args: Vec<String> = env::args().collect();
