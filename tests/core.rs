@@ -12,10 +12,23 @@ mod tests {
     use macro_lisp::*;
 
     #[test]
+    fn test_while_let(){
+        lisp!(progn
+            (defvar num Some(0))
+            (while-let (Some(i) = num)
+                (if (> i 9)
+                    (setf num None)
+                    (setf num Some(i + 1))
+                )
+            )
+            (assert-eq None num)
+        );
+    }
+
+    #[test]
     fn test_if_let(){
         lisp!(progn
             (defconstant number Some(7))
-            (println "hello")
             (if-let (Some(i) = number)
                 // success let
                 (assert-eq 7 i)
