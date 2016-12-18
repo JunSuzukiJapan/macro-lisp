@@ -327,6 +327,9 @@ macro_rules! lisp {
     (1+ $e:tt) => (lisp_arg!($e) + 1);
     (1- $e:tt) => (lisp_arg!($e) - 1);
 
+    // util methods
+    (len $e:tt) => (lisp_arg!($e).len());
+
     // tuple
     (tuple $($e:tt)* ) => ( ($(lisp_arg!($e)),*) );
 
@@ -346,7 +349,7 @@ macro_rules! lisp {
         (| $($name : $typ),* | { $( lisp!( $($e)* ) );* })( $(lisp_arg!($e2)),* )
     );
 
-    (  $sym:ident :: $( $sym2:ident )::+ $( $e:tt )* ) => ( $sym::$( $sym2 )::+ ( $(lisp_arg!($e)),* ) );
+    (  $sym:ident $(:: $sym2:ident )+ $( $e:tt )* ) => ( $sym $(:: $sym2 )+ ( $(lisp_arg!($e)),* ) );
     (  $sym:ident . $( $sym2:ident ).+ $( $e:tt )* ) => ( $sym.$( $sym2 ).+ ( $(lisp_arg!($e)),* ) );
     ($sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
 
