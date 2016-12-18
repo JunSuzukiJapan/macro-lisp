@@ -1,9 +1,3 @@
- #[derive(Debug)]
-pub struct Cons<T, U> {
-    pub car: T,
-    pub cdr: U
-}
-
 #[macro_export]
 macro_rules! lisp {
     // bool
@@ -294,16 +288,7 @@ macro_rules! lisp {
     (defvar $var:ident $e:expr) => (let mut $var = $e;);
     //(defvar $var:ident $e:tt) => (let mut $var = lisp_arg!($e););
 
-    // cons, car, cdr
-    (cons $car:tt $cdr:tt) => ($crate::Cons{car: $car, cdr: $cdr});
-    (car $cell:tt) => ($cell.car);
-    (cdr $cell:tt) => ($cell.cdr);
-
     // setf
-    (setf (car $e1:tt) ( $($e: tt)+ ) ) => ($e1.car = lisp!( $($e)+));
-    (setf (cdr $e1:tt) ( $($e: tt)+ ) ) => ($e1.cdr = lisp!( $($e)+));
-    (setf (car $e1:tt) $e2:expr) => ($e1.car = $e2);
-    (setf (cdr $e1:tt) $e2:expr) => ($e1.cdr = $e2);
     (setf $var:ident ( $($e: tt)+ ) ) => ($var = lisp!( $($e)+););
     (setf $var:ident $e:expr) => ($var = $e);
 
@@ -335,11 +320,7 @@ macro_rules! lisp {
     (% $x:tt $y:tt) => (lisp_arg!($x) % lisp_arg!($y));
 
     // incf,decf
-    (incf (car $e1:tt)) => ($e1.car = $e1.car + 1);
-    (incf (cdr $e1:tt)) => ($e1.cdr = $e1.cdr + 1);
     (incf $var:ident) => ($var = $var + 1);
-    (decf (car $e1:tt)) => ($e1.car = $e1.car - 1);
-    (decf (cdr $e1:tt)) => ($e1.cdr = $e1.cdr - 1);
     (decf $var:ident) => ($var = $var - 1);
 
     // 1+,1-
