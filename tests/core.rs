@@ -221,8 +221,6 @@ mod tests {
 
     lisp!(defun do_nothing());
 
-    //trace_macros!(true);
-
     #[test]
     fn test_defun(){
         let x = lisp!(add1 5);
@@ -233,8 +231,6 @@ mod tests {
 
         do_nothing();
     }
-
-    //trace_macros!(false);
 
     #[test]
     fn test_macro_utils(){

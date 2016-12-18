@@ -244,7 +244,7 @@ macro_rules! lisp {
         $( ( $($e:tt)* ))*
     ) => (
         $(#[$m]);*
-        fn $sym( $($name : $typ),* ) -> $return_type {
+        fn $sym ( $($name : $typ),* ) -> $return_type {
             $( lisp!( $($e)* ) );*
         }
     );
