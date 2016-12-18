@@ -2,7 +2,7 @@
 #![allow(unused_mut)]
 #![allow(dead_code)]
 #![allow(unreachable_code)]
-#![feature(trace_macros)]
+//#![feature(trace_macros)]
 
 #[macro_use]
 extern crate macro_lisp;
@@ -10,41 +10,6 @@ extern crate macro_lisp;
 #[cfg(test)]
 mod tests {
     use macro_lisp::*;
-
-    struct Sheep { naked: bool, name: &'static str }
-
-    trait Animal {
-        // スタティックメソッドのシグネチャ。
-        // `Self` はこのトレイトを実装している型になる。
-        fn new(name: &'static str) -> Self;
-
-        // インスタンスメソッドのシグネチャ。
-        // これらの関数は文字列を返す。
-        fn name(&self) -> &'static str;
-        fn noise(&self) -> &'static str;
-
-        // メソッドのデフォルトの挙動を定義することもできる。
-        fn talk(&self) {
-            println!("{} says {}", self.name(), self.noise());
-        }
-    }
-
-trace_macros!(true);
-    lisp!(implement Sheep
-        (defun is_naked (&self) bool
-            (self.naked)
-        )
-        /*
-        (defun shear(&mut self) ()
-            (if self.is_naked()
-                (println "{} is already naked..." self.name())
-                (progn
-                    (println "{} gets a haircut!" self.name)
-                    (setf self.naked true)))
-        )
-        */
-    );
-trace_macros!(false);
 
     #[test]
     fn test_while_let(){
