@@ -5,7 +5,25 @@ pub struct Cons<T, U> {
 }
 
 #[macro_export]
+macro_rules! lisp_trait_defun {
+    (defun $fn_name:ident (&mut self $($typ:ty)* ) $($result_typ:ty)* ) => (
+        fn $fn_name (&mut self /* , $($typ),*  */) $( -> $result_typ )*
+    );
+    (defun $fn_name:ident (&self $($typ:ty)* ) $($result_typ:ty)* ) => ();
+    (defun $fn_name:ident (self $($typ:ty)* ) $($result_typ:ty)* ) => ();
+}
+
+#[macro_export]
 macro_rules! lisp {
+    // trait
+    (deftrait $trait_name:ident
+        $( (defun $fn_name:ident ( $($arg:tt)* ) $($result_typ:ty)* ) )*
+    ) => (
+        trait $trait_name {
+            $( lisp_trait_defun!(defun $fn_name ( $($arg)* ) $($result_typ)* ); )*
+        }
+    );
+
     // defstruct
     ( $(#[$m:meta])* defstruct $struct_name:ident < $($generic:ident),+ >
         (pub $( ($name:ident $typ:ty) )* )
