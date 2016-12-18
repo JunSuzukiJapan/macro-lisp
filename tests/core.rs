@@ -11,6 +11,20 @@ extern crate macro_lisp;
 mod tests {
     use macro_lisp::*;
 
+    #[test]
+    fn test_if_let(){
+        lisp!(progn
+            (defconstant number Some(7))
+            (println "hello")
+            (if-let (Some(i) = number)
+                // success let
+                (assert-eq 7 i)
+                // else
+                (panic "fail if-let")
+            )
+        );
+    }
+
     lisp!(defstruct Person
         (pub // public members
             (name String)

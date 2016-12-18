@@ -203,6 +203,10 @@ macro_rules! lisp {
     (if $cond:tt $e1:tt $e2:tt) => (if $cond { lisp_arg!($e1) }else{ lisp_arg!($e2) });
     (if $cond:tt $e:tt) => (if $cond { lisp_arg!($e) });
 
+    // if-let
+    (if-let ( $pattern:pat = $($cond:tt)* ) $e1:tt $e2:tt) => (if let $pattern = lisp_arg!($($cond)*) { lisp_arg!($e1) }else{ lisp_arg!($e2) });
+    (if-let ( $pattern:pat = $($cond:tt)* ) $e:tt) => (if let $pattern = lisp_arg!($($cond)*) { lisp_arg!($e) });
+
     // when unless
     (when ( $($cond:tt)* ) $e:tt) => (if lisp!($($cond)*) { lisp_arg!($e) });
     (when $cond:tt $e:tt) => (if $cond { lisp_arg!($e) });
@@ -313,6 +317,7 @@ macro_rules! lisp {
     (assert-eq $e1:tt $e2:tt) => ( assert_eq!($e1, $e2); );
     (debug-assert $e1:tt $e2:tt) => ( debug_assert!($e1, $e2); );
     (debug-assert-eq $e1:tt $e2:tt) => ( debug_assert_eq!($e1, $e2); );
+    (panic $($arg:tt)+ ) => ( panic!( $($arg)+ ); );
 
     // +,-,*,/,%
     (+ $x:tt $y:tt) => (lisp_arg!($x) + lisp_arg!($y)); 
