@@ -5,42 +5,11 @@ pub struct Cons<T, U> {
 }
 
 #[macro_export]
-macro_rules! lisp_impl_defun {
-    /*
-    ( $(#[$m:meta])*  defun $sym:ident (&self $( ( $name:ident $typ:ty ) )+ ) $return_type:tt
-        $( ( $($e:tt)* ))*
-    ) => (
-        $(#[$m]);*
-        fn $sym(&self, $($name : $typ),+ ) -> $return_type {
-            $( lisp!( $($e)* ) );*
-        }
-    );
-    */
-    ( $(#[$m:meta])*  defun $sym:ident (&self) $return_type:tt
-        $( ( $($e:tt)* ))*
-    ) => (
-        $(#[$m]);*
-        fn $sym(&self) -> $return_type {
-            $( lisp!( $($e)* ) );*
-        }
-    );
-}
-
-#[macro_export]
 macro_rules! lisp {
     // bool
     (false) => (false);
     (true) => (true);
     (self $(. $e:tt)* ) => (self $(. $e)* );
-
-    // impl
-    (implement $struct_name:ident
-        $( ( $($e:tt)* ) )*
-    ) => (
-        impl $struct_name {
-            $( lisp_impl_defun!( $($e)* ); )*
-        }
-    );
 
     // defstruct
     ( $(#[$m:meta])* defstruct $struct_name:ident < $($generic:ident),+ >
