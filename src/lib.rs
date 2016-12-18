@@ -219,7 +219,7 @@ macro_rules! lisp {
     ( $(#[$m:meta])* extern-crate $sym:ident) => ($(#[$m]);* extern crate $sym;);
 
     // use
-    (use $sym:tt) => (use $sym;);
+    (use $sym:tt $(:: $sym2:tt)* ) => (use $sym $(:: $sym2)* ;);
 
     // mod
     ( $(#[$m:meta])* module $sym:ident
