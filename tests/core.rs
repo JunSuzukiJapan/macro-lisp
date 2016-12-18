@@ -11,19 +11,6 @@ extern crate macro_lisp;
 mod tests {
     use macro_lisp::*;
 
-    //trace_macros!(true);
-    lisp!(deftrait HasArea
-        (defun area (&self) f64)
-        (defun sample (&mut self))
-    );
-
-/*
-    lisp!(deftrait DoubleDrop<T> 
-        (defun double_drop (self  (_ T)))
-    );
-*/
-    //trace_macros!(false);
-
     lisp!(defstruct Person
         (pub // public members
             (name String)
