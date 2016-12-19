@@ -2,5 +2,10 @@
 name = "macro_lisp"
 version = "0.1.0"
 authors = ["Jun Suzuki <jun.suzuki.japan@gmail.com>"]
+repository = "https://github.com/JunSuzukiJapan/macro-lisp"
+keywords = ["macro", "lisp"]
+license-file = "LICENSE"
+readme = "README.md"
+description = "Lisp-like DSL for Rust language."
 
 [dependencies]
