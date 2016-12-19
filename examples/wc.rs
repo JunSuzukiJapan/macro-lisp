@@ -35,21 +35,15 @@ lisp!(defun main () ()
 
             (defconstant b byte.unwrap())
             (if (== b 0x0a)
-                (incf line_count)
-            )
+                (incf line_count))
 
             (if in_word
                 (if (is_whitespace b)
-                    (setf in_word false)
-                )
+                    (setf in_word false))
                 (if (! (is_whitespace b))
                     (progn
                         (setf in_word true)
-                        (incf word_count)
-                    )
-                )
-            )
-        )
-    )
+                        (incf word_count))))))
+
     (println "{:>10} {:>10} {:>10} {}" line_count word_count char_count path)
 );
