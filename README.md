@@ -8,7 +8,7 @@ include the following in your Cargo.toml file:
 
 ```
 [dependencies]
-macro-lisp="0.1.0"
+macro_lisp="0.1.0"
 ```
 
 And then import the library using:
