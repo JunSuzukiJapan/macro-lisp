@@ -8,9 +8,7 @@
 extern crate macro_lisp;
 
 lisp!(use std::env);
-lisp!(use std::fs::File);
-lisp!(use std::io::Read);
-use std::process::exit;
+lisp!(use std::process::exit);
 
 lisp!(defun is_whitespace ((b u8)) bool
     (match b
@@ -55,42 +53,3 @@ lisp!(defun main () ()
     )
     (println "{:>10} {:>10} {:>10} {}" line_count word_count char_count path)
 );
-
-/*
-fn main(){
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        println!("usage: wc file");
-        std::process::exit(0);
-    }
-
-    let path = &args[1];
-    let file = File::open(path).unwrap();
-    
-    let mut char_count = 0;
-    let mut word_count = 0;
-    let mut line_count = 0;
-    let mut in_word = false;
-    for byte in file.bytes() {
-        char_count += 1;
-
-        let b = byte.unwrap();
-        if b == 0x0a {
-            line_count += 1;
-        }
-
-        if in_word {
-            if is_whitespace(b) {
-                in_word = false;
-            }
-        }else{
-            if ! is_whitespace(b) {
-                in_word = true;
-                word_count += 1;
-            }
-        }
-    }
-
-    println!("{:>10} {:>10} {:>10} {}", line_count, word_count, char_count, path);
-}
-*/

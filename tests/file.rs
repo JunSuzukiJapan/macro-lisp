@@ -17,7 +17,7 @@ mod file_tests {
             (with-output-to-new-file (file filename)
                 (write-all file b"Hello, world!"))
             (defvar s String::new())
-            (with-input-from-file (file filename)
+            (with-input-from-mut-file (file filename)
                 (read-to-string file s))
             (assert-eq "Hello, world!" s)
         );

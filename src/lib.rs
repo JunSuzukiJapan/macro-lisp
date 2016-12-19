@@ -78,6 +78,14 @@ macro_rules! lisp {
     ) => ({
         use std;
         use std::io::Read;
+        let $var = std::fs::File::open(lisp_arg!($path)).unwrap();
+        $( lisp!( $($e2)* ) );*
+    });
+    (with-input-from-mut-file ($var:ident $path:tt)
+        $( ( $($e2:tt)* ) )*
+    ) => ({
+        use std;
+        use std::io::Read;
         let mut $var = std::fs::File::open(lisp_arg!($path)).unwrap();
         $( lisp!( $($e2)* ) );*
     });
