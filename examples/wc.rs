@@ -18,18 +18,45 @@ lisp!(defun is_whitespace ((b u8)) bool
         (_ => (false) ))
 );
 
-lisp!(defun main2 () ()
+lisp!(defun main () ()
     (defconstant (args Vec<String>) env::args().collect())
     (if (< (len args) 2)
         (progn
             (println "usage: wc file")
             (exit 0)))
 
+    (defvar char_count 0)
+    (defvar word_count 0)
+    (defvar line_count 0)
+    (defvar in_word false)
 
+    (defconstant path &args[1])
+    (with-input-from-file (file path)
+        (doiter (byte file.bytes())
+            (incf char_count)
 
+            (defconstant b byte.unwrap())
+            (if (== b 0x0a)
+                (incf line_count)
+            )
 
+            (if in_word
+                (if (is_whitespace b)
+                    (setf in_word false)
+                )
+                (if (! (is_whitespace b))
+                    (progn
+                        (setf in_word true)
+                        (incf word_count)
+                    )
+                )
+            )
+        )
+    )
+    (println "{:>10} {:>10} {:>10} {}" line_count word_count char_count path)
 );
 
+/*
 fn main(){
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
@@ -66,3 +93,4 @@ fn main(){
 
     println!("{:>10} {:>10} {:>10} {}", line_count, word_count, char_count, path);
 }
+*/

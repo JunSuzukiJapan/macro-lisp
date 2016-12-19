@@ -189,8 +189,8 @@ macro_rules! lisp {
     });
 
     // doiter
-    (doiter ($var:ident $iter:tt) $( ( $($e:tt)* ) )* ) => (
-        for $var in lisp_arg!($iter) {
+    (doiter ($var:ident $( $iter:tt )* ) $( ( $($e:tt)* ) )* ) => (
+        for $var in lisp_arg!( $($iter)* ) {
             $( lisp!( $($e)* ) );*
         }
     );
@@ -326,6 +326,9 @@ macro_rules! lisp {
     // 1+,1-
     (1+ $e:tt) => (lisp_arg!($e) + 1);
     (1- $e:tt) => (lisp_arg!($e) - 1);
+
+    // !
+    (! $e:tt) => ( ! lisp_arg!($e));
 
     // util methods
     (len $e:tt) => (lisp_arg!($e).len());
