@@ -1,6 +1,7 @@
 # macro-lisp
 
 Lisp-like DSL for Rust language.
+[![Build Status](https://travis-ci.org/JunSuzukiJapan/macro-lisp.svg?branch=master)](https://travis-ci.org/JunSuzukiJapan/macro-lisp)
 
 # Installation
 
