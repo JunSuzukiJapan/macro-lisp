@@ -24,7 +24,7 @@ extern crate macro_lisp;
 
 ## factorial
 
-```
+``` rust
 #[macro_use]
 extern crate macro_lisp;
 
@@ -40,7 +40,7 @@ lisp!(defun main () ()
 
 ## wc
 
-```
+``` rust
 #[macro_use]
 extern crate macro_lisp;
 
