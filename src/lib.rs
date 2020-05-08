@@ -372,7 +372,6 @@ macro_rules! lisp {
 
 #[macro_export]
 macro_rules! lisp_arg {
-    ( ( $e:tt ) ) => (lisp!($e));
     ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
     ($e:expr) => ($e);
 }
