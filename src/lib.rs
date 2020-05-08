@@ -96,12 +96,12 @@ macro_rules! lisp {
         use std;
         use std::io::Write;
         let mut $var = std::fs::File::create(lisp_arg!($path)).unwrap();
-        $( lisp!( $($e2)* ) );*        
+        $( lisp!( $($e2)* ) );*
     });
     /*
     (with-output-to-string ($var:ident)  $( ( $($e2:tt)* ) )* ) => (
         let mut $var = String::new();
-        $( lisp!( $($e2)* ) );*        
+        $( lisp!( $($e2)* ) );*
         $var
     );
 
@@ -109,7 +109,7 @@ macro_rules! lisp {
         $( ( $($e2:tt)* ) )*
     ) => ({
         let mut $var:&str = lisp_arg!($s); // check type
-        $( lisp!( $($e2)* ) );*        
+        $( lisp!( $($e2)* ) );*
     });
     */
 
@@ -175,7 +175,7 @@ macro_rules! lisp {
 
     // while-let
     (while-let ( $pattern:pat = $($cond:tt)* ) $( ( $($e:tt)* ) )* ) => ( while  let $pattern = lisp_arg!($($cond)*) { $( lisp!( $($e)* ) );* });
-    
+
     // dotimes
     (dotimes ($var:ident $count:tt) $( ( $($e:tt)* ) )* ) => (
         for $var in 0..lisp_arg!($count) {
@@ -301,13 +301,13 @@ macro_rules! lisp {
     (setf $var:ident $e:expr) => ($var = $e);
 
     // compare
-    (eq $x:tt $y:tt) => (lisp_arg!($x) == lisp_arg!($y)); 
-    (== $x:tt $y:tt) => (lisp_arg!($x) == lisp_arg!($y)); 
-    (!= $x:tt $y:tt) => (lisp_arg!($x) != lisp_arg!($y)); 
-    (< $x:tt $y:tt) => (lisp_arg!($x) < lisp_arg!($y)); 
-    (> $x:tt $y:tt) => (lisp_arg!($x) > lisp_arg!($y)); 
-    (<= $x:tt $y:tt) => (lisp_arg!($x) <= lisp_arg!($y)); 
-    (>= $x:tt $y:tt) => (lisp_arg!($x) >= lisp_arg!($y)); 
+    (eq $x:tt $y:tt) => (lisp_arg!($x) == lisp_arg!($y));
+    (== $x:tt $y:tt) => (lisp_arg!($x) == lisp_arg!($y));
+    (!= $x:tt $y:tt) => (lisp_arg!($x) != lisp_arg!($y));
+    (< $x:tt $y:tt) => (lisp_arg!($x) < lisp_arg!($y));
+    (> $x:tt $y:tt) => (lisp_arg!($x) > lisp_arg!($y));
+    (<= $x:tt $y:tt) => (lisp_arg!($x) <= lisp_arg!($y));
+    (>= $x:tt $y:tt) => (lisp_arg!($x) >= lisp_arg!($y));
 
     // macro util
     (print $( $e:tt )+) => ( print!( $($e),+ ) );
@@ -321,10 +321,10 @@ macro_rules! lisp {
     (panic $($arg:tt)+ ) => ( panic!( $($arg)+ ); );
 
     // +,-,*,/,%
-    (+ $x:tt $y:tt) => (lisp_arg!($x) + lisp_arg!($y)); 
-    (- $x:tt $y:tt) => (lisp_arg!($x) - lisp_arg!($y)); 
-    (* $x:tt $y:tt) => (lisp_arg!($x) * lisp_arg!($y)); 
-    (/ $x:tt $y:tt) => (lisp_arg!($x) / lisp_arg!($y)); 
+    (+ $x:tt $y:tt) => (lisp_arg!($x) + lisp_arg!($y));
+    (- $x:tt $y:tt) => (lisp_arg!($x) - lisp_arg!($y));
+    (* $x:tt $y:tt) => (lisp_arg!($x) * lisp_arg!($y));
+    (/ $x:tt $y:tt) => (lisp_arg!($x) / lisp_arg!($y));
     (% $x:tt $y:tt) => (lisp_arg!($x) % lisp_arg!($y));
 
     // incf,decf
