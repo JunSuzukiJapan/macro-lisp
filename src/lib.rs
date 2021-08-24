@@ -134,7 +134,7 @@ macro_rules! lisp {
     (flush $writable:tt) => (lisp_arg!($writable).flush());
 
     //
-    // for imple Seek
+    // for impl Seek
     //
     (seek $buffer:tt $e:tt) => (lisp_arg!($buffer).seek(lisp_arg!($e)));
 
@@ -247,7 +247,7 @@ macro_rules! lisp {
          }
     );
 
-    // defun
+    // defun & return
     ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
         $( ( $($e:tt)* ))*
     ) => (
@@ -256,6 +256,7 @@ macro_rules! lisp {
             $( lisp!( $($e)* ) );*
         }
     );
+    // defun & void
     ( $(#[$m:meta])* defun $sym:ident ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
     ) => (
@@ -264,6 +265,7 @@ macro_rules! lisp {
             $( lisp!( $($e)* ) );*
         }
     );
+    // pub defun & return
     ( $(#[$m:meta])* pub defun $sym:ident ( $( ( $name:ident $typ:ty ) )* ) $return_type:tt
         $( ( $($e:tt)* ))*
     ) => (
@@ -272,6 +274,7 @@ macro_rules! lisp {
             $( lisp!( $($e)* ) );*
         }
     );
+    // pub defun & void
     ( $(#[$m:meta])* pub defun $sym:ident ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
     ) => (
@@ -290,7 +293,6 @@ macro_rules! lisp {
     // defvar
     (defvar ($var:ident $typ:ty) ( $($e:tt)+ )) => (let mut $var:$typ = lisp!( $($e)+););
     (defvar ($var:ident $typ:ty) $e:expr) => (let mut $var:$typ = $e;);
-    //(defvar ($var:ident $typ:ty) $e:expr) => (let mut $var:$typ = $e;);
 
     (defvar $var:ident ( $($e: tt)+ )) => (let mut $var = lisp!( $($e)+););
     (defvar $var:ident $e:expr) => (let mut $var = $e;);
@@ -347,10 +349,11 @@ macro_rules! lisp {
     // vec
     (vec $($e:tt)* ) => ( vec![$(lisp_arg!($e)),*] );
 
-    // lambda
+    // lambda & move
     (lambda move ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
     ) => (move | $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
+    // lambda
     (lambda ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
     ) => (| $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
@@ -360,9 +363,10 @@ macro_rules! lisp {
         (| $($name : $typ),* | { $( lisp!( $($e)* ) );* })( $(lisp_arg!($e2)),* )
     );
 
-    (  $sym:ident $(:: $sym2:ident )+ $( $e:tt )* ) => ( $sym $(:: $sym2 )+ ( $(lisp_arg!($e)),* ) );
-    (  $sym:ident . $( $sym2:ident ).+ $( $e:tt )* ) => ( $sym.$( $sym2 ).+ ( $(lisp_arg!($e)),* ) );
-    ($sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
+    // ident
+    ( $sym:ident $(:: $sym2:ident )+ $( $e:tt )* ) => ( $sym $(:: $sym2 )+ ( $(lisp_arg!($e)),* ) );
+    ( $sym:ident . $( $sym2:ident ).+ $( $e:tt )* ) => ( $sym.$( $sym2 ).+ ( $(lisp_arg!($e)),* ) );
+    ( $sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
 
     // execute rust
     (rust $( $st:stmt )* ) => ( $($st);* );
