@@ -8,16 +8,17 @@ Lisp-like DSL for Rust language.
 
 include the following in your Cargo.toml file:
 
-```
+```toml
 [dependencies]
 macro_lisp="0.1.0"
 ```
 
 And then import the library using:
 
-```
-#[macro_use]
+```rust
 extern crate macro_lisp;
+
+use macro_lisp::lisp;
 ```
 
 # Examples
@@ -25,8 +26,9 @@ extern crate macro_lisp;
 ## factorial
 
 ``` rust
-#[macro_use]
 extern crate macro_lisp;
+
+use macro_lisp::lisp;
 
 lisp!(defun factorial ((n i32)) i32
   (if (<= n 1)
@@ -41,8 +43,9 @@ lisp!(defun main () ()
 ## wc
 
 ``` rust
-#[macro_use]
 extern crate macro_lisp;
+
+use macro_lisp::lisp;
 
 lisp!(use std::env);
 lisp!(use std::process::exit);
