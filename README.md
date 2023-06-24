@@ -10,7 +10,7 @@ include the following in your Cargo.toml file:
 
 ```toml
 [dependencies]
-macro_lisp="0.1.0"
+macro_lisp="0.2.0"
 ```
 
 And then import the library using:
