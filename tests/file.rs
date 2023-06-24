@@ -2,7 +2,6 @@
 #![allow(unused_must_use)]
 #![allow(unused_imports)]
 
-#[macro_use]
 extern crate macro_lisp;
 
 #[cfg(test)]
@@ -11,7 +10,7 @@ mod file_tests {
 
     //trace_macros!(true);
     #[test]
-    fn test_with_input_from_file(){
+    fn test_with_input_from_file() {
         lisp!(progn
             (defconstant filename "target/dummy.data")
             (with-output-to-new-file (file filename)

@@ -33,7 +33,7 @@
         },
         {
             "taskName": "test",
-            "isTestCommand": true, 
+            "isTestCommand": true,
             "problemMatcher": [
                 {
                     "owner": "rust",

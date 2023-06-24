@@ -4,8 +4,9 @@
 // if not install nightly, then
 //    $ rustup install nightly
 
-#[macro_use]
 extern crate macro_lisp;
+
+use macro_lisp::lisp;
 
 lisp!(pub module module_test
     (pub defun hello () ()

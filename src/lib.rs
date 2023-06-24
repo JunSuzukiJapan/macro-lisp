@@ -67,8 +67,8 @@ macro_rules! lisp {
 
     // match
     (match $e:tt $( ( $pattern:pat $(| $pat2:pat)* => ( $($e2:tt)* ) ) )* ) => (
-        match lisp_arg!($e) {
-            $($pattern $(| $pat2)* => lisp_match_arg!($($e2)*) ),*
+        match $crate::lisp_arg!($e) {
+            $($pattern $(| $pat2)* => $crate::lisp_match_arg!($($e2)*) ),*
         }
     );
 
@@ -78,16 +78,16 @@ macro_rules! lisp {
     ) => ({
         use std;
         use std::io::Read;
-        let $var = std::fs::File::open(lisp_arg!($path)).unwrap();
-        $( lisp!( $($e2)* ) );*
+        let $var = std::fs::File::open($crate::lisp_arg!($path)).unwrap();
+        $( $crate::lisp!( $($e2)* ) );*
     });
     (with-input-from-mut-file ($var:ident $path:tt)
         $( ( $($e2:tt)* ) )*
     ) => ({
         use std;
         use std::io::Read;
-        let mut $var = std::fs::File::open(lisp_arg!($path)).unwrap();
-        $( lisp!( $($e2)* ) );*
+        let mut $var = std::fs::File::open($crate::lisp_arg!($path)).unwrap();
+        $( $crate::lisp!( $($e2)* ) );*
     });
 
     (with-output-to-new-file ($var:ident $path:tt)
@@ -95,53 +95,53 @@ macro_rules! lisp {
     ) => ({
         use std;
         use std::io::Write;
-        let mut $var = std::fs::File::create(lisp_arg!($path)).unwrap();
-        $( lisp!( $($e2)* ) );*
+        let mut $var = std::fs::File::create($crate::lisp_arg!($path)).unwrap();
+        $( $crate::lisp!( $($e2)* ) );*
     });
     /*
     (with-output-to-string ($var:ident)  $( ( $($e2:tt)* ) )* ) => (
         let mut $var = String::new();
-        $( lisp!( $($e2)* ) );*
+        $( $crate::lisp!( $($e2)* ) );*
         $var
     );
 
     (with-input-from-string ($var:ident $s:tt)
         $( ( $($e2:tt)* ) )*
     ) => ({
-        let mut $var:&str = lisp_arg!($s); // check type
-        $( lisp!( $($e2)* ) );*
+        let mut $var:&str = $crate::lisp_arg!($s); // check type
+        $( $crate::lisp!( $($e2)* ) );*
     });
     */
 
     //
     // for impl Read
     //
-    (read $file:tt $s:ident) => (lisp_arg!($file).read(&mut lisp_arg!($s)));
-    (read-to-string $file:tt $s:ident) => (lisp_arg!($file).read_to_string(&mut lisp_arg!($s)));
-    (read-to-end $file:tt $s:ident) => (lisp_arg!($file).read_to_end(&mut lisp_arg!($s)));
-    (read-exact $file:tt $s:ident) => (lisp_arg!($file).read_exact(&mut lisp_arg!($s)));
-    (bytes $readable:tt) => (lisp_arg!($readable).bytes());
-    (chars $readable:tt) => (lisp_arg!($readable).chars());
-    (chain $readable:tt $next:tt) => (lisp_arg!($readable).chain($next));
-    (take $readable:tt $limit:tt) => (lisp_arg!($readable).take($limit));
+    (read $file:tt $s:ident) => ($crate::lisp_arg!($file).read(&mut $crate::lisp_arg!($s)));
+    (read-to-string $file:tt $s:ident) => ($crate::lisp_arg!($file).read_to_string(&mut $crate::lisp_arg!($s)));
+    (read-to-end $file:tt $s:ident) => ($crate::lisp_arg!($file).read_to_end(&mut $crate::lisp_arg!($s)));
+    (read-exact $file:tt $s:ident) => ($crate::lisp_arg!($file).read_exact(&mut $crate::lisp_arg!($s)));
+    (bytes $readable:tt) => ($crate::lisp_arg!($readable).bytes());
+    (chars $readable:tt) => ($crate::lisp_arg!($readable).chars());
+    (chain $readable:tt $next:tt) => ($crate::lisp_arg!($readable).chain($next));
+    (take $readable:tt $limit:tt) => ($crate::lisp_arg!($readable).take($limit));
 
     //
     // for impl Write
     //
-    (write $buffer:tt $e:tt) => (lisp_arg!($buffer).write(lisp_arg!($e)));
-    (write-all $buffer:tt $e:tt) => (lisp_arg!($buffer).write_all(lisp_arg!($e)));
-    (write-format $buffer:tt $fmt:tt) => (lisp_arg!($buffer).write_fmt(lisp_arg!($fmt)));
-    (flush $writable:tt) => (lisp_arg!($writable).flush());
+    (write $buffer:tt $e:tt) => ($crate::lisp_arg!($buffer).write($crate::lisp_arg!($e)));
+    (write-all $buffer:tt $e:tt) => ($crate::lisp_arg!($buffer).write_all($crate::lisp_arg!($e)));
+    (write-format $buffer:tt $fmt:tt) => ($crate::lisp_arg!($buffer).write_fmt($crate::lisp_arg!($fmt)));
+    (flush $writable:tt) => ($crate::lisp_arg!($writable).flush());
 
     //
     // for impl Seek
     //
-    (seek $buffer:tt $e:tt) => (lisp_arg!($buffer).seek(lisp_arg!($e)));
+    (seek $buffer:tt $e:tt) => ($crate::lisp_arg!($buffer).seek($crate::lisp_arg!($e)));
 
     //
     // for impl etc.
     //
-    (by-ref $object:tt) => (lisp_arg!($object).by_ref());
+    (by-ref $object:tt) => ($crate::lisp_arg!($object).by_ref());
 
     //
     // let,do,etc
@@ -151,12 +151,12 @@ macro_rules! lisp {
     (let ( $( ($var:ident $e:tt) )* )
         $( ( $($e2:tt)* ) )*
     ) => ({
-        $(let mut $var = lisp_arg!($e);)*
-        $( lisp!( $($e2)* ) );*
+        $(let mut $var = $crate::lisp_arg!($e);)*
+        $( $crate::lisp!( $($e2)* ) );*
     });
 
     // progn
-    (progn $( ( $($e:tt)* ) )* ) => ({ $( lisp!( $($e)* ) );* });
+    (progn $( ( $($e:tt)* ) )* ) => ({ $( $crate::lisp!( $($e)* ) );* });
 
     //
     // Loops
@@ -167,19 +167,19 @@ macro_rules! lisp {
     //(continue : $labl:item) => (continue $label;);
 
     // loop
-    (loop $( ( $($e:tt)* ) )* ) => ( loop { $( lisp!( $($e)* ) );* });
-    //(: $label:ident loop $( ( $($e:tt)* ) )* ) => ($label: loop { $( lisp!( $($e)* ) );* });
+    (loop $( ( $($e:tt)* ) )* ) => ( loop { $( $crate::lisp!( $($e)* ) );* });
+    //(: $label:ident loop $( ( $($e:tt)* ) )* ) => ($label: loop { $( $crate::lisp!( $($e)* ) );* });
 
     // while
-    (while $cond:tt $( ( $($e:tt)* ) )* ) => ( while lisp_arg!($cond) { $( lisp!( $($e)* ) );* });
+    (while $cond:tt $( ( $($e:tt)* ) )* ) => ( while $crate::lisp_arg!($cond) { $( $crate::lisp!( $($e)* ) );* });
 
     // while-let
-    (while-let ( $pattern:pat = $($cond:tt)* ) $( ( $($e:tt)* ) )* ) => ( while  let $pattern = lisp_arg!($($cond)*) { $( lisp!( $($e)* ) );* });
+    (while-let ( $pattern:pat = $($cond:tt)* ) $( ( $($e:tt)* ) )* ) => ( while  let $pattern = $crate::lisp_arg!($($cond)*) { $( $crate::lisp!( $($e)* ) );* });
 
     // dotimes
     (dotimes ($var:ident $count:tt) $( ( $($e:tt)* ) )* ) => (
-        for $var in 0..lisp_arg!($count) {
-            $( lisp!( $($e)* ) );*
+        for $var in 0..$crate::lisp_arg!($count) {
+            $( $crate::lisp!( $($e)* ) );*
         }
     );
 
@@ -188,18 +188,18 @@ macro_rules! lisp {
         ($cond:tt $result:tt)
         $( ( $($e:tt)* ) )*
     ) => ({
-        $(let mut $var = lisp_arg!($init);)*
-        while !(lisp_arg!($cond)) {
-            $( lisp!( $($e)* ) );*
-            $($var = lisp_arg!($step);)*
+        $(let mut $var = $crate::lisp_arg!($init);)*
+        while !($crate::lisp_arg!($cond)) {
+            $( $crate::lisp!( $($e)* ) );*
+            $($var = $crate::lisp_arg!($step);)*
         }
-        lisp_arg!($result)
+        $crate::lisp_arg!($result)
     });
 
     // doiter
     (doiter ($var:ident $( $iter:tt )* ) $( ( $($e:tt)* ) )* ) => (
-        for $var in lisp_arg!( $($iter)* ) {
-            $( lisp!( $($e)* ) );*
+        for $var in $crate::lisp_arg!( $($iter)* ) {
+            $( $crate::lisp!( $($e)* ) );*
         }
     );
 
@@ -208,20 +208,20 @@ macro_rules! lisp {
     //
 
     // if
-    (if ( $($cond:tt)* ) $e1:tt $e2:tt) => (if lisp!($($cond)*) { lisp_arg!($e1) }else{ lisp_arg!($e2) });
-    (if ( $($cond:tt)* ) $e:tt) => (if lisp!($($cond)*) { lisp_arg!($e) });
-    (if $cond:tt $e1:tt $e2:tt) => (if $cond { lisp_arg!($e1) }else{ lisp_arg!($e2) });
-    (if $cond:tt $e:tt) => (if $cond { lisp_arg!($e) });
+    (if ( $($cond:tt)* ) $e1:tt $e2:tt) => (if $crate::lisp!($($cond)*) { $crate::lisp_arg!($e1) }else{ $crate::lisp_arg!($e2) });
+    (if ( $($cond:tt)* ) $e:tt) => (if $crate::lisp!($($cond)*) { $crate::lisp_arg!($e) });
+    (if $cond:tt $e1:tt $e2:tt) => (if $cond { $crate::lisp_arg!($e1) }else{ $crate::lisp_arg!($e2) });
+    (if $cond:tt $e:tt) => (if $cond { $crate::lisp_arg!($e) });
 
     // if-let
-    (if-let ( $pattern:pat = $($cond:tt)* ) $e1:tt $e2:tt) => (if let $pattern = lisp_arg!($($cond)*) { lisp_arg!($e1) }else{ lisp_arg!($e2) });
-    (if-let ( $pattern:pat = $($cond:tt)* ) $e:tt) => (if let $pattern = lisp_arg!($($cond)*) { lisp_arg!($e) });
+    (if-let ( $pattern:pat = $($cond:tt)* ) $e1:tt $e2:tt) => (if let $pattern = $crate::lisp_arg!($($cond)*) { $crate::lisp_arg!($e1) }else{ $crate::lisp_arg!($e2) });
+    (if-let ( $pattern:pat = $($cond:tt)* ) $e:tt) => (if let $pattern = $crate::lisp_arg!($($cond)*) { $crate::lisp_arg!($e) });
 
     // when unless
-    (when ( $($cond:tt)* ) $e:tt) => (if lisp!($($cond)*) { lisp_arg!($e) });
-    (when $cond:tt $e:tt) => (if $cond { lisp_arg!($e) });
-    (unless ( $($cond:tt)* ) $e:tt) => (if ! (lisp!($($cond)*)) { lisp_arg!($e) });
-    (unless $cond:tt $e:tt) => (if !($cond) { lisp_arg!($e) });
+    (when ( $($cond:tt)* ) $e:tt) => (if $crate::lisp!($($cond)*) { $crate::lisp_arg!($e) });
+    (when $cond:tt $e:tt) => (if $cond { $crate::lisp_arg!($e) });
+    (unless ( $($cond:tt)* ) $e:tt) => (if ! ($crate::lisp!($($cond)*)) { $crate::lisp_arg!($e) });
+    (unless $cond:tt $e:tt) => (if !($cond) { $crate::lisp_arg!($e) });
 
      // extern crate
     ( $(#[$m:meta])* extern-crate $sym:ident) => ($(#[$m]);* extern crate $sym;);
@@ -235,7 +235,7 @@ macro_rules! lisp {
      ) => (
          $(#[$m]);*
          mod $sym {
-             $( lisp!( $($e)* ); )*
+             $( $crate::lisp!( $($e)* ); )*
          }
     );
     ( $(#[$m:meta])* pub module $sym:ident
@@ -243,7 +243,7 @@ macro_rules! lisp {
      ) => (
          $(#[$m]);*
          pub mod $sym {
-             $( lisp!( $($e)* ); )*
+             $( $crate::lisp!( $($e)* ); )*
          }
     );
 
@@ -253,7 +253,7 @@ macro_rules! lisp {
     ) => (
         $(#[$m]);*
         fn $sym ( $($name : $typ),* ) -> $return_type {
-            $( lisp!( $($e)* ) );*
+            $( $crate::lisp!( $($e)* ) );*
         }
     );
     // defun & void
@@ -262,7 +262,7 @@ macro_rules! lisp {
     ) => (
         $(#[$m]);*
         fn $sym( $($name : $typ),* ) {
-            $( lisp!( $($e)* ) );*
+            $( $crate::lisp!( $($e)* ) );*
         }
     );
     // pub defun & return
@@ -271,7 +271,7 @@ macro_rules! lisp {
     ) => (
         $(#[$m]);*
         pub fn $sym( $($name : $typ),* ) -> $return_type {
-            $( lisp!( $($e)* ) );*
+            $( $crate::lisp!( $($e)* ) );*
         }
     );
     // pub defun & void
@@ -280,36 +280,36 @@ macro_rules! lisp {
     ) => (
         $(#[$m]);*
         pub fn $sym( $($name : $typ),* ) {
-            $( lisp!( $($e)* ) );*
+            $( $crate::lisp!( $($e)* ) );*
         }
     );
 
     // defconstant
-    (defconstant ($var:ident $typ:ty) ( $($e:tt)+ ) ) => (let $var:$typ = lisp!( $($e)+););
+    (defconstant ($var:ident $typ:ty) ( $($e:tt)+ ) ) => (let $var:$typ = $crate::lisp!( $($e)+););
     (defconstant ($var:ident $typ:ty) $e:expr) => (let $var:$typ = $e;);
-    (defconstant $var:ident ( $($e:tt)+ ) ) => (let $var = lisp!( $($e)+ ););
+    (defconstant $var:ident ( $($e:tt)+ ) ) => (let $var = $crate::lisp!( $($e)+ ););
     (defconstant $var:ident $e:expr) => (let $var = $e;);
 
     // defvar
-    (defvar ($var:ident $typ:ty) ( $($e:tt)+ )) => (let mut $var:$typ = lisp!( $($e)+););
+    (defvar ($var:ident $typ:ty) ( $($e:tt)+ )) => (let mut $var:$typ = $crate::lisp!( $($e)+););
     (defvar ($var:ident $typ:ty) $e:expr) => (let mut $var:$typ = $e;);
 
-    (defvar $var:ident ( $($e: tt)+ )) => (let mut $var = lisp!( $($e)+););
+    (defvar $var:ident ( $($e: tt)+ )) => (let mut $var = $crate::lisp!( $($e)+););
     (defvar $var:ident $e:expr) => (let mut $var = $e;);
-    //(defvar $var:ident $e:tt) => (let mut $var = lisp_arg!($e););
+    //(defvar $var:ident $e:tt) => (let mut $var = $crate::lisp_arg!($e););
 
     // setf
-    (setf $var:ident ( $($e: tt)+ ) ) => ($var = lisp!( $($e)+););
+    (setf $var:ident ( $($e: tt)+ ) ) => ($var = $crate::lisp!( $($e)+););
     (setf $var:ident $e:expr) => ($var = $e);
 
     // compare
-    (eq $x:tt $y:tt) => (lisp_arg!($x) == lisp_arg!($y));
-    (== $x:tt $y:tt) => (lisp_arg!($x) == lisp_arg!($y));
-    (!= $x:tt $y:tt) => (lisp_arg!($x) != lisp_arg!($y));
-    (< $x:tt $y:tt) => (lisp_arg!($x) < lisp_arg!($y));
-    (> $x:tt $y:tt) => (lisp_arg!($x) > lisp_arg!($y));
-    (<= $x:tt $y:tt) => (lisp_arg!($x) <= lisp_arg!($y));
-    (>= $x:tt $y:tt) => (lisp_arg!($x) >= lisp_arg!($y));
+    (eq $x:tt $y:tt) => ($crate::lisp_arg!($x) == $crate::lisp_arg!($y));
+    (== $x:tt $y:tt) => ($crate::lisp_arg!($x) == $crate::lisp_arg!($y));
+    (!= $x:tt $y:tt) => ($crate::lisp_arg!($x) != $crate::lisp_arg!($y));
+    (< $x:tt $y:tt) => ($crate::lisp_arg!($x) < $crate::lisp_arg!($y));
+    (> $x:tt $y:tt) => ($crate::lisp_arg!($x) > $crate::lisp_arg!($y));
+    (<= $x:tt $y:tt) => ($crate::lisp_arg!($x) <= $crate::lisp_arg!($y));
+    (>= $x:tt $y:tt) => ($crate::lisp_arg!($x) >= $crate::lisp_arg!($y));
 
     // macro util
     (print $( $e:tt )+) => ( print!( $($e),+ ) );
@@ -323,50 +323,50 @@ macro_rules! lisp {
     (panic $($arg:tt)+ ) => ( panic!( $($arg)+ ); );
 
     // +,-,*,/,%
-    (+ $x:tt $y:tt) => (lisp_arg!($x) + lisp_arg!($y));
-    (- $x:tt $y:tt) => (lisp_arg!($x) - lisp_arg!($y));
-    (* $x:tt $y:tt) => (lisp_arg!($x) * lisp_arg!($y));
-    (/ $x:tt $y:tt) => (lisp_arg!($x) / lisp_arg!($y));
-    (% $x:tt $y:tt) => (lisp_arg!($x) % lisp_arg!($y));
+    (+ $x:tt $y:tt) => ($crate::lisp_arg!($x) + $crate::lisp_arg!($y));
+    (- $x:tt $y:tt) => ($crate::lisp_arg!($x) - $crate::lisp_arg!($y));
+    (* $x:tt $y:tt) => ($crate::lisp_arg!($x) * $crate::lisp_arg!($y));
+    (/ $x:tt $y:tt) => ($crate::lisp_arg!($x) / $crate::lisp_arg!($y));
+    (% $x:tt $y:tt) => ($crate::lisp_arg!($x) % $crate::lisp_arg!($y));
 
     // incf,decf
     (incf $var:ident) => ($var = $var + 1);
     (decf $var:ident) => ($var = $var - 1);
 
     // 1+,1-
-    (1+ $e:tt) => (lisp_arg!($e) + 1);
-    (1- $e:tt) => (lisp_arg!($e) - 1);
+    (1+ $e:tt) => ($crate::lisp_arg!($e) + 1);
+    (1- $e:tt) => ($crate::lisp_arg!($e) - 1);
 
     // !
-    (! $e:tt) => ( ! lisp_arg!($e));
+    (! $e:tt) => ( ! $crate::lisp_arg!($e));
 
     // util methods
-    (len $e:tt) => (lisp_arg!($e).len());
+    (len $e:tt) => ($crate::lisp_arg!($e).len());
 
     // tuple
-    (tuple $($e:tt)* ) => ( ($(lisp_arg!($e)),*) );
+    (tuple $($e:tt)* ) => ( ($($crate::lisp_arg!($e)),*) );
 
     // vec
-    (vec $($e:tt)* ) => ( vec![$(lisp_arg!($e)),*] );
+    (vec $($e:tt)* ) => ( vec![$($crate::lisp_arg!($e)),*] );
 
     // lambda & move
     (lambda move ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
-    ) => (move | $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
+    ) => (move | $($name : $typ),* |{ $( $crate::lisp!( $($e)* ) );* });
     // lambda
     (lambda ( $( ( $name:ident $typ:ty ) )* )
         $( ( $($e:tt)* ))*
-    ) => (| $($name : $typ),* |{ $( lisp!( $($e)* ) );* });
+    ) => (| $($name : $typ),* |{ $( $crate::lisp!( $($e)* ) );* });
 
     // funcall
     ((lambda ( ( $($name:ident $typ:ty)* ) ) $( ( $($e:tt)* ))* ) $($e2:tt)*) => (
-        (| $($name : $typ),* | { $( lisp!( $($e)* ) );* })( $(lisp_arg!($e2)),* )
+        (| $($name : $typ),* | { $( $crate::lisp!( $($e)* ) );* })( $($crate::lisp_arg!($e2)),* )
     );
 
     // ident
-    ( $sym:ident $(:: $sym2:ident )+ $( $e:tt )* ) => ( $sym $(:: $sym2 )+ ( $(lisp_arg!($e)),* ) );
-    ( $sym:ident . $( $sym2:ident ).+ $( $e:tt )* ) => ( $sym.$( $sym2 ).+ ( $(lisp_arg!($e)),* ) );
-    ( $sym:ident $( $e:tt )* ) => ( $sym ( $(lisp_arg!($e)),* ) );
+    ( $sym:ident $(:: $sym2:ident )+ $( $e:tt )* ) => ( $sym $(:: $sym2 )+ ( $($crate::lisp_arg!($e)),* ) );
+    ( $sym:ident . $( $sym2:ident ).+ $( $e:tt )* ) => ( $sym.$( $sym2 ).+ ( $($crate::lisp_arg!($e)),* ) );
+    ( $sym:ident $( $e:tt )* ) => ( $sym ( $($crate::lisp_arg!($e)),* ) );
 
     // execute rust
     (rust $( $st:stmt )* ) => ( $($st);* );
@@ -376,12 +376,12 @@ macro_rules! lisp {
 
 #[macro_export]
 macro_rules! lisp_arg {
-    ( ( $($e:tt)* ) ) => ( lisp!( $($e)* ) );
+    ( ( $($e:tt)* ) ) => ( $crate::lisp!( $($e)* ) );
     ($e:expr) => ($e);
 }
 
 #[macro_export]
 macro_rules! lisp_match_arg {
     ($e:expr) => ($e);
-    ( $($e:tt)* ) => (lisp!( $($e)* ));
+    ( $($e:tt)* ) => ($crate::lisp!( $($e)* ));
 }

@@ -3,9 +3,10 @@
 #![allow(dead_code)]
 //#![feature(trace_macros)]
 
-#[macro_use]
 extern crate macro_lisp;
-    
+
+use macro_lisp::lisp;
+
 //trace_macros!(true);
 
 lisp!(module module_test

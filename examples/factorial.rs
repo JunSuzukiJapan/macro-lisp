@@ -4,8 +4,9 @@
 // if not install nightly, then
 //    $ rustup install nightly
 
-#[macro_use]
 extern crate macro_lisp;
+
+use macro_lisp::lisp;
 
 lisp!(defun factorial ((n i32)) i32
   (if (<= n 1)

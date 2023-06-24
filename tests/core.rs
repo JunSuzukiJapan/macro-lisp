@@ -4,13 +4,14 @@
 #![allow(unreachable_code)]
 //#![feature(trace_macros)]
 
-#[macro_use]
 extern crate macro_lisp;
 
 #[cfg(test)]
 mod tests {
+    use macro_lisp::lisp;
+
     #[test]
-    fn test_while_let(){
+    fn test_while_let() {
         lisp!(progn
             (defvar num Some(0))
             (while-let (Some(i) = num)
@@ -24,7 +25,7 @@ mod tests {
     }
 
     #[test]
-    fn test_if_let(){
+    fn test_if_let() {
         lisp!(progn
             (defconstant number Some(7))
             (if-let (Some(i) = number)
@@ -50,21 +51,18 @@ mod tests {
         (pub (age i32))
     );
 
-
     lisp!(defstruct Point<T>
         ((x T) (y T))
     );
 
     #[test]
-    fn test_struct(){
-        lisp!(progn
-
-        );
+    fn test_struct() {
+        lisp!(progn);
     }
 
     #[test]
-    fn test_match(){
-        lisp!(progn 
+    fn test_match() {
+        lisp!(progn
             (defconstant s "test")
 
             (defconstant x (match s
@@ -79,9 +77,9 @@ mod tests {
     }
 
     #[test]
-    fn test_lambda(){
+    fn test_lambda() {
         lisp!(progn
-            (defconstant f 
+            (defconstant f
                 (lambda ((x i32)) (1+ x)))
             (defconstant x (f 5))
             (assert-eq 6 x)
@@ -92,7 +90,7 @@ mod tests {
     }
 
     #[test]
-    fn test_loop_break(){
+    fn test_loop_break() {
         lisp!(let ((x 0))
             (loop
                 (loop
@@ -107,7 +105,7 @@ mod tests {
     }
 
     #[test]
-    fn test_doiter(){
+    fn test_doiter() {
         let vec = lisp!(vec 1 2 3 4 5);
         lisp!(let ((x 0))
             (doiter (num vec)
@@ -122,7 +120,7 @@ mod tests {
     }
 
     #[test]
-    fn test_do(){
+    fn test_do() {
         lisp!(progn
             (defconstant num
                 (do ((x 0 (1+ x))
@@ -133,7 +131,7 @@ mod tests {
     }
 
     #[test]
-    fn test_let(){
+    fn test_let() {
         lisp!(progn
             (defconstant x 3)
             (defconstant y 5)
@@ -149,7 +147,7 @@ mod tests {
     }
 
     #[test]
-    fn test_dotimes(){
+    fn test_dotimes() {
         lisp!(progn
             (defvar x 0)
             (dotimes (y 5)
@@ -159,7 +157,7 @@ mod tests {
     }
 
     #[test]
-    fn test_while(){
+    fn test_while() {
         lisp!(progn
             (defvar x 0)
             (while (< x 10)
@@ -169,7 +167,7 @@ mod tests {
     }
 
     #[test]
-    fn test_when_unless(){
+    fn test_when_unless() {
         lisp!(progn
             (defvar x 0)
             (when true
@@ -188,7 +186,7 @@ mod tests {
     }
 
     #[test]
-    fn test_progn(){
+    fn test_progn() {
         lisp!(progn
             (defconstant x 3)
             (defconstant y 4)
@@ -198,7 +196,7 @@ mod tests {
     }
 
     #[test]
-    fn test_if(){
+    fn test_if() {
         lisp!(if (eq 1 1) (println "equal"));
         lisp!(if (eq 2 2) (println "equal") (println "not equal"));
         let x = lisp!(if true (+ 1 1) (+ 2 2));
@@ -222,7 +220,7 @@ mod tests {
     lisp!(defun do_nothing());
 
     #[test]
-    fn test_defun(){
+    fn test_defun() {
         let x = lisp!(add1 5);
         assert_eq!(6, x);
 
@@ -233,12 +231,12 @@ mod tests {
     }
 
     #[test]
-    fn test_macro_utils(){
+    fn test_macro_utils() {
         lisp!(print "hello, {}" "world");
     }
 
     #[test]
-    fn test_defconstant(){
+    fn test_defconstant() {
         lisp!(defconstant x 3);
         assert_eq!(3, x);
 
@@ -246,7 +244,7 @@ mod tests {
     }
 
     #[test]
-    fn test_defvar(){
+    fn test_defvar() {
         lisp!(defvar x 0);
         assert_eq!(0, x);
         lisp!(setf x 1);
